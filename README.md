@@ -16,3 +16,8 @@ In this repository is already present the configuration file needed to launch Op
 ## Debug
 For debugging purposes modify the file [.gdbinit](.gdbinit), and then launch gdb with
 >arm-miosix-eabi-gdb main.elf --command=.gdbinit
+
+## Access the board output
+In order to access what the board prints on screen you should use
+>screen /dev/ttyACM0 19200
+then you can exit by pressing Ctrl+A -> k -> y.

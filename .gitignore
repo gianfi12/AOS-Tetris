@@ -17,6 +17,7 @@ Makefile
 Readme.txt
 a.out
 test.c
+*.py
 
 # Exclude Mac OS X temporary
 ._*
