@@ -3,6 +3,7 @@
 This the repository used for the development of the Tetris project, associated to the course of AOS at the Polimi.
 
 ## Installation usage
+Follow this [guide](https://miosix.org/wiki/index.php?title=Linux_Quick_Start) to install correctly the board.
 Clone the repository of [Miosix](https://github.com/fedetft/miosix-kernel).
 Copy this repository inside the miosix-kernel/ path. Substitute the main.cpp file with this one and use the command
 >make
@@ -13,4 +14,5 @@ After installing the driver for your target device use Openocd to open a connect
 In this repository is already present the configuration file needed to launch Openocd on the STM32 NUCLEO-L476RG.
 
 ## Debug
-For debug purposes modify and use the python script [debug.py](debug.py).
+For debugging purposes modify the file [.gdbinit](.gdbinit), and then launch gdb with
+>arm-miosix-eabi-gdb main.elf --command=.gdbinit

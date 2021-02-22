@@ -50,9 +50,14 @@ int main()
 {
     int row = 0, col = 0;
     setTerminalMode();
-    getPos(&col,&row);
+    getPos(&row,&col);
     // printf("(%d,%d)\n",col,row);
     //TODO: follow example in https://solarianprogrammer.com/2019/04/08/c-programming-ansi-escape-codes-windows-macos-linux-terminals/
+    //TODO: use another thread to read the input from keyboard and not displaying it in some way and then add a queue in which puts the input, that is read in the other part by some class that is mainting a state used to draw the frame
+    
+    //TODO: use instead the main loop in order to draw frames
+    //TODO: use external file to draw each object, and pass the content to this file at a function like drawObject() that move the cursor where to write on screen for represents this object and takes also the color of them and where to leave the cursor at the end
+    //TODO: set the screen dimension fixed to a 50x50 and then center it in other cases?
     return 0;
 }
 
@@ -69,6 +74,7 @@ void setTerminalMode(){
 
 int getPos(int *x, int *y){
     //NOTE: code provided from https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code
+    //NOTE: look on wikipedia at https://en.wikipedia.org/wiki/ANSI_escape_code
     char buf[30]={0};
     int ret,i,pow;
     char ch;
@@ -82,7 +88,7 @@ int getPos(int *x, int *y){
     printf("\x1b[999;999H\n");
     //Print the actual position fo the cursor on the screen
     printf("\x1b[6n\n");
-    //Read from stdin the output of the previous characyer
+    //Read from stdin the output of the previous character
     for( i = 0, ch = 0; ch != 'R'; i++ )
     {
         ret = read(0, &ch, 1);
