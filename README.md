@@ -21,3 +21,7 @@ For debugging purposes modify the file [.gdbinit](.gdbinit), and then launch gdb
 In order to access what the board prints on screen you should use
 >screen /dev/ttyACM0 19200
 then you can exit by pressing Ctrl+A -> k -> y.
+
+## Increase baud rate
+Modify in the file miosix-kernel/miosix/config/arch/cortexM4_stm32l4/stm32l476rg_nucleo/board_settings.h as in the following:
+>const unsigned int defaultSerialSpeed=115200;
