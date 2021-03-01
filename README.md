@@ -19,7 +19,7 @@ For debugging purposes modify the file [.gdbinit](.gdbinit), and then launch gdb
 
 ## Access the board output
 In order to access what the board prints on screen you should use
->screen /dev/ttyACM0 19200
+>screen /dev/ttyACM0 115200
 then you can exit by pressing Ctrl+A -> k -> y.
 
 ## Increase baud rate

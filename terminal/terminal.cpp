@@ -67,24 +67,20 @@ void Terminal::positionCursorForStartDrawing(){
     int startingRow = (row-ROW_TETRIS)/2+1;
     int startingCol = (col-COL_TETRIS)/2+1;
     printf("\x1b[0m");
+    printf("\x1b[%d;%dH",startingRow,startingCol);
     fflush(stdout);
-    //Set text color
-    printf("%s",BLU);
-    //Set background color
-    printf("%s",BLUB);
-    fflush(stdout);
-    string str;
-    for(int i=0; i<ROW_TETRIS; i++){
-        printf("\x1b[%d;%dH",startingRow+i,startingCol);
-        fflush(stdout);    
-        // str += "\x1b[" + to_string(startingRow+i) + ";" + to_string(startingCol) + "H";
-        for(int j=0; j<COL_TETRIS; j++){
-                // str += BLOCK;
-                // printf("%s",BLOCK);
-                printf("\x20");
-                fflush(stdout);
-        }
-    }
-    // printf("%s",str.c_str());
-    // fflush(stdout);    
+    // //Set text color
+    // printf("%s",BLU);
+    // //Set background color
+    // printf("%s",BLUB);
+    // fflush(stdout);
+    // string str;
+    // for(int i=0; i<ROW_TETRIS; i++){
+    //     printf("\x1b[%d;%dH",startingRow+i,startingCol);
+    //     fflush(stdout);    
+    //     for(int j=0; j<COL_TETRIS; j++){
+    //             printf("\x20");
+    //             fflush(stdout);
+    //     }
+    // }
 }

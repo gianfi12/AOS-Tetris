@@ -13,7 +13,7 @@ main.map
 *.d
 .gdb_history
 .gitmodules
-Makefile
+
 Readme.txt
 a.out
 test.c

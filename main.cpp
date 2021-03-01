@@ -45,6 +45,7 @@ int main()
     }
 
     terminal.positionCursorForStartDrawing();
+    
     // printf("(%d,%d)\n",col,row);
     //TODO: follow example in https://solarianprogrammer.com/2019/04/08/c-programming-ansi-escape-codes-windows-macos-linux-terminals/
     //TODO: use another thread to read the input from keyboard and not displaying it in some way and then add a queue in which puts the input, that is read in the other part by some class that is mainting a state used to draw the frame
