@@ -19,7 +19,7 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp ./terminal/terminal.cpp
+main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp
 
 ##
 ## List here additional static libraries with relative path

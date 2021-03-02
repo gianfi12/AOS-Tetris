@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <cstdlib> 
 #include <termios.h>
+#include <string>
 
 #include "utility.h"
 
@@ -22,6 +23,9 @@ class Terminal{
         void getPos(int *row, int *col);
         /* Set the position of the cursor to the left higher corner of the drawing area */
         void positionCursorForStartDrawing();
+        /* Draw a portion of the screen based on the content of printString
+        starting from the position on screen (writingRow, writingCol). */
+        void drawOnScreen(string printString, int writingRow, int writingCol);
     private:
         /* Set the terminal mode used to display character to the end user */
         void setTerminalMode();

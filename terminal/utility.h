@@ -1,11 +1,14 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+/* Key mapping defintion */
 #define ARROW_UP 65
 #define ARROW_DOWN 66
 #define ARROW_LEFT 68
 #define ARROW_RIGHT 67
+#define NULL_CHAR " "
 
+/* Terminal settings defintion */
 #define COL_TETRIS 65
 #define ROW_TETRIS 40
 

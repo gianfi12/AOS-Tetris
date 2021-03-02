@@ -1,43 +1,41 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <iostream>
+// #include <csignal>
+// #include <signal.h>
 #include "miosix.h"
 
 #include <fcntl.h>
 #include "terminal/terminal.h"
 #include "terminal/utility.h"
+#include "render_object/render_object.h"
+#include "render_object/menu/menu.h"
+#include "terminal/input_manager.h"
 
 
 using namespace std;
 using namespace miosix;
 
-// bool isDone=false;
-// char lastReadCharacter = 'a';
 
-// void readLine(char *str, int len)
-// {
-//     if(len==0) return;
-//     for(int i=0;i<len;i++)
-//     {
-//         str[i]=getchar();
-//         //in raw mode no conversion of \r to \n is performed!
-//         if(str[i]!='\n' && str[i]!='\r' && i!=len-1) continue;
-//         str[i]='\0';
-//         return;
-//     }
-// }
+InputManager inputManager;
 
+Terminal terminal;
 
-// void threadfunc(void *argv){
-//     while(!isDone){
-//         lastReadCharacter = getchar();
-//     }
-// }
+void signalHandler( int signum ) {
+    //TODO ask Terraneo if we can use the signal library.
+   cout << "Interrupt signal (" << signum << ") received. Closing the game\n";
+
+   //TODO clean up if needed.
+
+   exit(signum);  
+}
 
 int main()
 {
+    // signal(SIGINT, signalHandler);  
     int row = 0, col = 0;
-    Terminal terminal;
+
     terminal.getPos(&row,&col);
     if(row<ROW_TETRIS || col<COL_TETRIS){
         printf("The terminal size is not enough, exiting.\n");
@@ -45,6 +43,20 @@ int main()
     }
 
     terminal.positionCursorForStartDrawing();
+
+    RenderObject * actualRenderObject = new Menu(&inputManager, &terminal);
+    while (true)
+    {
+        //TODO check the condition if a signal handler can be used.
+        RenderObject * returnedRenderObject = actualRenderObject->drawFrame();
+        if(returnedRenderObject!=NULL){
+            delete actualRenderObject;
+            actualRenderObject = returnedRenderObject;
+        }
+    }
+    
+
+
     
     // printf("(%d,%d)\n",col,row);
     //TODO: follow example in https://solarianprogrammer.com/2019/04/08/c-programming-ansi-escape-codes-windows-macos-linux-terminals/
@@ -53,5 +65,6 @@ int main()
     //TODO: use instead the main loop in order to draw frames
     //TODO: use external file to draw each object, and pass the content to this file at a function like drawObject() that move the cursor where to write on screen for represents this object and takes also the color of them and where to leave the cursor at the end
     //TODO: set the screen dimension fixed to a 50x50 and then center it in other cases?
+
     return 0;
 }

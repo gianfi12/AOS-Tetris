@@ -1,6 +1,6 @@
 #include "terminal.h"
 #include <string>
-
+#include <fstream>                                                              
 
 Terminal::Terminal():col(0),row(0){
     setTerminalMode();
@@ -84,3 +84,15 @@ void Terminal::positionCursorForStartDrawing(){
     //     }
     // }
 }
+
+void Terminal::drawOnScreen(string printString, int writingRow, int writingCol){ 
+    //TODO print only the content of printString starting from writingRow and writingCol.                                                            
+    // printf("\x1b[0m");                                                          
+    // string line;    
+    // std::fstream file(file_name);                                               
+    // while(std::getline(file, line)) {                                           
+    //     printf("%s %d %d\n", line.c_str(), writingRow, writingCol);                   
+    //     fflush(stdout);                                                         
+    //     writingRow++;                                                           
+    // }                                                                           
+}          
