@@ -20,7 +20,7 @@ Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputM
     xml_document<> doc;
     xml_node<> * root_node;
     // Reading the xml file into a vector
-    ifstream file ("../rendering.xml");
+    ifstream file ("./rendering.xml");
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     buffer.push_back('\0');
     // Parse the buffer using the library into doc
