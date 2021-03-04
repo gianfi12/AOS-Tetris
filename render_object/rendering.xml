@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <menu>
+        <ascii_art color = "\e[0;37m">
+    .___________. _______ .___________..______       __       _______.
+    |           ||   ____||           ||   _  \     |  |     /       |
+    `---|  |----`|  |__   `---|  |----`|  |_)  |    |  |    |   (----`
+        |  |     |   __|      |  |     |      /     |  |     \   \    
+        |  |     |  |____     |  |     |  |\  \----.|  | .----)   |   
+        |__|     |_______|    |__|     | _| `._____||__| |_______/    
+                                                                    
+        </ascii_art>
+        <starting_option>
+        press enter to begin the game
+        </starting_option>
+        <quit_option>
+        press q to quit the game
+        </quit_option>
+        <settings></settings>
+    </menu>
+
+    <tetrominos>
+        <tetromino name = "I" color = "\e[0;36m" shape = "\u2588\u2588\u2588\u2588">
+            This tetromino is very useful for filling deep 1-wide wells within your stack, and is the only one to be able to clear 4 lines (a Tetris) within traditional rulesets.
+        </tetromino>
+        <tetromino name = "J" color = "\e[0;34m" shape = "\u2588\n\u2588\u2588\u2588">
+            This tetromino can be useful in filling 1-1-2-deep gaps in your stack, as well as clearing lines in a left-side 1-wide well as long as there is a 2-wide opening at the top.
+        </tetromino>
+            <tetromino name = "L" color = "\e[0;37m" shape = "   \u2588\n\u2588\u2588\u2588">
+                This tetromino can be used in the exact same ways as the J piece in mirrored situations. Note that some specific rotation systems also allow non-mirrored kicks from these tetrominos.
+        </tetromino>
+        <tetromino name = "O" color = "\e[0;33m" shape = "\u2588\u2588\n\u2588\u2588">
+            Regarded as an unversatile tetromino due to its lack of unique rotation states, this tetromino can be used for filling deep 2-wide wells, as well as creating 2-tall steps for J- and L-pieces.
+        </tetromino>
+        <tetromino name = "S" color = "\e[032m" shape = " \u2588\u2588\n\u2588\u2588">
+            This tetromino can be used in filling gaps in your stacks that have steps in them, as well as creating these steps for other tetrominos to utilize. It can also be used for clearing lines in a right-side 1-wide well with a 2-wide opening at the top.
+        </tetromino>
+        <tetromino name = "T" color = "\e[0;35m" shape = " \u2588\n\u2588\u2588\u2588">
+            This tetromino can be used to fill an inverse-pyramid-shaped hole in your stack, as well as fixing a highly stepwise stack into a more "flat" stack. It can also be used in the infamous "T-spin".
+        </tetromino>
+        <tetromino name = "Z" color = "\e[0;31m" shape = "\u2588\u2588\n \u2588\u2588">
+            This tetromino can be used in the exact same ways as the S piece in mirrored situations. Note that, like the J and L pair, some specific rotation systems also allow non-mirrored kicks from these tetrominos.
+        </tetromino>
+    </tetriminos>
+</root>

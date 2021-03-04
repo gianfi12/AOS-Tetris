@@ -1,4 +1,10 @@
-#include "menu.h"                                                               
+#include <iostream>
+#include <fstream>
+#include "menu.h"
+#include "../../rapidxml-1.13/rapidxml.hpp"
+
+using namespace rapidxml;
+using namespace std;
                                                                                 
 void updateState(void * argv){
     InputManager * inputManager = (InputManager*)argv;
@@ -10,6 +16,20 @@ void updateState(void * argv){
 
 Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal){
     //TODO open and parse the file that is saved as objects_file_name
+    // Following RapidXml guide and this example https://gist.github.com/JSchaenzle/2726944
+    xml_document<> doc;
+    xml_node<> * root_node;
+    // Reading the xml file into a vector
+    ifstream file ("../rendering.xml");
+    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    // Parse the buffer using the library into doc
+    doc.parse<0>(&buffer[0]);
+    // Find root node
+    root_node = doc.first_node("root");
+    xml_node<> * node = root_node -> first_node("menu") -> first_node("ascii_art");
+    string color = root_node -> first_attribute("color") -> value();
+    string ascii_art = root_node -> value();
 };     
 
 Menu::~Menu(){
