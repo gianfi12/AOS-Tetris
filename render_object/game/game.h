@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "render_object/render_object.h"
-#include "utility.h"
 
 using namespace std;
 

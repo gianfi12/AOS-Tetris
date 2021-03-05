@@ -19,7 +19,7 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp
+main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp render_object/game/game.cpp 
 
 ##
 ## List here additional static libraries with relative path
@@ -29,7 +29,7 @@ LIBS :=
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
-INCLUDE_DIRS := ./terminal
+INCLUDE_DIRS := ./terminal ./render_object
 
 ##############################################################################
 ## You should not need to modify anything below                             ##

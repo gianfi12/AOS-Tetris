@@ -11,7 +11,7 @@ void Menu::updateState(char c){
     //TODO update the state based on the received char c
 }
 
-void readAndUpdate(void *argv){
+void readAndUpdateMenu(void *argv){
     Menu * menu = (Menu*)argv;
     InputManager * inputManager = menu->inputManager;
     while (!inputManager->isDone)
@@ -39,7 +39,7 @@ Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputM
     string color = root_node -> first_attribute("color") -> value();
     string ascii_art = root_node -> value();
     // Starts the updateState thread
-    t = Thread::create(readAndUpdate ,2048,1,(void*)this,Thread::JOINABLE);
+    t = Thread::create(readAndUpdateMenu ,2048,1,(void*)this,Thread::JOINABLE);
 };     
 
 Menu::~Menu(){
