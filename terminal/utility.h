@@ -1,12 +1,17 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+/* Define here used global variables */
+extern bool isDone;
+
 /* Key mapping defintion */
 #define ARROW_UP 65
 #define ARROW_DOWN 66
 #define ARROW_LEFT 68
 #define ARROW_RIGHT 67
 #define NULL_CHAR " "
+#define ESCAPE 27
+#define CTRLC 3
 
 /* Terminal settings defintion */
 #define COL_TETRIS 65

@@ -4,7 +4,13 @@ void readStdout(void * argv){
     InputManager * inputManager = (InputManager*)argv;
     while (!inputManager->isDone)
     {
-        inputManager->putChar(getchar());
+        char incomingChar = getchar();
+        inputManager->putChar(incomingChar);
+        if(incomingChar==ESCAPE || incomingChar==CTRLC){
+            inputManager->isDone.store(true); //Stop the main thread
+            bool isDone;
+            isDone = true;
+        }
     }
 }
 
@@ -16,7 +22,6 @@ InputManager::~InputManager(){
     t->join();
     write(0,NULL_CHAR,1);
     isDone.store(true);
-
 }
 
 

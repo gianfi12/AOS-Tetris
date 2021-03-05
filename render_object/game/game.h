@@ -1,25 +1,23 @@
-#ifndef MENU_H
-#define MENU_H
-#include <string>
+#ifndef GAME_H
+#define GAME_H
 
 #include "render_object/render_object.h"
-#include "miosix.h"
+#include "utility.h"
 
 using namespace std;
 
-/* This represents the Menu renderer, that based on the its internal state and the read
-characters will print differently on the terminal.*/
-class Menu: public RenderObject{
+/* This class represents the render object that is responsible for drawing frame during the game. */
+class Game: public RenderObject{
     public:
-        /* Constructs an instance of this Menu. */
-        Menu(InputManager *,Terminal *);
-        /* Destroy an instace of the menu. */
-        ~Menu();
+        /* Constructs an instance of this Game. */
+        Game(InputManager *,Terminal *);
+        /* Destroy an instace of the Game. */
+        ~Game();
         /* Draw the actual frame based on the actual state, bu using the primitive
         provided by Terminal. If the returned RenderObject is != null than we the actual one has finished its work
         and the returned one has to draw the next frame. */
         RenderObject * drawFrame();
-        /* Update the state of the Menu based on the last read char. */
+        /* Update the state of the Game based on the last read char. */
         void updateState(char c);
     private:
         /* Is the file that contains a representation of the object to be printed on screen

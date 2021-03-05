@@ -19,8 +19,9 @@ using namespace miosix;
 
 
 InputManager inputManager;
-
 Terminal terminal;
+bool isDone;
+
 
 void signalHandler( int signum ) {
     //TODO ask Terraneo if we can use the signal library.
@@ -45,7 +46,7 @@ int main()
     terminal.positionCursorForStartDrawing();
 
     RenderObject * actualRenderObject = new Menu(&inputManager, &terminal);
-    while (true)
+    while (isDone)
     {
         //TODO check the condition if a signal handler can be used.
         RenderObject * returnedRenderObject = actualRenderObject->drawFrame();

@@ -96,3 +96,9 @@ void Terminal::drawOnScreen(string printString, int writingRow, int writingCol){
     //     writingRow++;                                                           
     // }                                                                           
 }          
+
+void Terminal::resetScreen(){
+    printf("\x1b[0m");
+    printf("\x1b[2J");
+    positionCursorForStartDrawing();
+}

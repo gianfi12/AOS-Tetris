@@ -26,6 +26,9 @@ class Terminal{
         /* Draw a portion of the screen based on the content of printString
         starting from the position on screen (writingRow, writingCol). */
         void drawOnScreen(string printString, int writingRow, int writingCol);
+        /* Resets the content of the screen to be black, and also the color to the default one. 
+        It also sets the position of the screen to be in the position set by postionCursorForStartDrawing. */
+        void resetScreen();
     private:
         /* Set the terminal mode used to display character to the end user */
         void setTerminalMode();
