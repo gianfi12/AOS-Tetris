@@ -25,22 +25,18 @@ int Terminal::refreshColAndRow(){
     char ch;
     
     //Reset screen
-    printf("\e[1;1H\e[2J");
-    //Save actual cursos pointer
-    printf("\x1b%d",7);
-    printf("\n");
+    printf("\e[1;1H\e[2J\n");
+    // //Save actual cursos pointer
+    // printf("\x1b%d",7);
     //Set position to the bottom right of the screen
     printf("\x1b[999;999H\n");
     //Print the actual position fo the cursor on the screen
     printf("\x1b[6n\n");
-    //Read from stdin the output of the previous character
+    fflush(stdout);
+    // Read from stdin the output of the previous character
     for( i = 0, ch = 0; ch != 'R'; i++ )
     {
-        ret = read(0, &ch, 1);
-        if ( !ret )     {
-            fprintf(stderr, "getpos: error reading response!\n");
-            return -1;
-        }
+        ch = getchar();
         buf[i] = ch;
     }
     //Compute the value of x and y from the characters inside buf
@@ -63,11 +59,10 @@ void Terminal::getPos(int *row, int *col){
     *col = this->col;
 }
 
-void Terminal::positionCursorForStartDrawing(){
+void Terminal::positionCursorForStartDrawing(int row, int col){
     int startingRow = (row-ROW_TETRIS)/2+1;
     int startingCol = (col-COL_TETRIS)/2+1;
-    printf("\x1b[0m");
-    printf("\x1b[%d;%dH",startingRow,startingCol);
+    printf("\x1b[%d;%dH",startingRow+row,startingCol+col);
     fflush(stdout);
     // //Set text color
     // printf("%s",BLU);
@@ -85,7 +80,11 @@ void Terminal::positionCursorForStartDrawing(){
     // }
 }
 
-void Terminal::drawOnScreen(string printString, int writingRow, int writingCol){ 
+void Terminal::drawOnScreen(DrawObject drawObject, int writingRow, int writingCol){ 
+    positionCursorForStartDrawing(writingRow,writingCol);
+    printf(drawObject.getObjectColor().c_str());
+    printf(drawObject.getObjectString().c_str());
+    fflush(stdout);
     //TODO print only the content of printString starting from writingRow and writingCol.                                                            
     // printf("\x1b[0m");                                                          
     // string line;    
@@ -100,5 +99,4 @@ void Terminal::drawOnScreen(string printString, int writingRow, int writingCol){
 void Terminal::resetScreen(){
     printf("\x1b[0m");
     printf("\x1b[2J");
-    positionCursorForStartDrawing();
 }

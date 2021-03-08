@@ -10,8 +10,11 @@
 #include <string>
 
 #include "utility.h"
+#include "render_object/draw_object/draw_object.h"
+#include "miosix.h"
 
 using namespace std;
+using namespace miosix;
 
 class Terminal{
     public:
@@ -21,11 +24,12 @@ class Terminal{
         int refreshColAndRow();
         /* Set the terminal screen sizes */
         void getPos(int *row, int *col);
-        /* Set the position of the cursor to the left higher corner of the drawing area */
-        void positionCursorForStartDrawing();
-        /* Draw a portion of the screen based on the content of printString
+        /* Set the position of the cursor to the left higher corner of the drawing area, relative
+        to the given row and col. */
+        void positionCursorForStartDrawing(int row, int col);
+        /* Draw a portion of the screen based on DrawObject
         starting from the position on screen (writingRow, writingCol). */
-        void drawOnScreen(string printString, int writingRow, int writingCol);
+        void drawOnScreen(DrawObject drawObject, int writingRow, int writingCol);
         /* Resets the content of the screen to be black, and also the color to the default one. 
         It also sets the position of the screen to be in the position set by postionCursorForStartDrawing. */
         void resetScreen();

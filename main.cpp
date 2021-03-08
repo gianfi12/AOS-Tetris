@@ -18,42 +18,33 @@ using namespace std;
 using namespace miosix;
 
 
-InputManager inputManager;
-Terminal terminal;
+
 bool isDone;
-
-
-void signalHandler( int signum ) {
-    //TODO ask Terraneo if we can use the signal library.
-   cout << "Interrupt signal (" << signum << ") received. Closing the game\n";
-
-   //TODO clean up if needed.
-
-   exit(signum);  
-}
 
 int main()
 {
-    // signal(SIGINT, signalHandler);  
     int row = 0, col = 0;
 
+    InputManager inputManager;
+    Terminal terminal;
     terminal.getPos(&row,&col);
     if(row<ROW_TETRIS || col<COL_TETRIS){
         printf("The terminal size is not enough, exiting.\n");
         return -1;
     }
 
-    terminal.positionCursorForStartDrawing();
-
-    RenderObject * actualRenderObject = new Menu(&inputManager, &terminal);
+    Menu menu(&inputManager, &terminal);
+    RenderObject * actualRenderObject = &menu;
     while (isDone)
     {
+        terminal.resetScreen();
         //TODO check the condition if a signal handler can be used.
         RenderObject * returnedRenderObject = actualRenderObject->drawFrame();
         if(returnedRenderObject!=NULL){
             delete actualRenderObject;
             actualRenderObject = returnedRenderObject;
         }
+        // Thread::sleep(500);
     }
     
 

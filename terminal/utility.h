@@ -87,7 +87,7 @@ extern bool isDone;
 #define BHWHT "\e[1;97m"
  
 //Reset
-#define reset "\e[0m"
+#define RESET_CHAR "\e[0m"
 
 
 //Character

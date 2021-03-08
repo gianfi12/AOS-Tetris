@@ -33,7 +33,7 @@ Game::~Game(){
                                                                                 
 RenderObject * Game::drawFrame() {     
     //TODO decide which elements to be selected for printing from the objects file.    
-    terminal->drawOnScreen("", 0, 0);
+    // terminal->drawOnScreen("", 0, 0);
     
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
     return NULL;

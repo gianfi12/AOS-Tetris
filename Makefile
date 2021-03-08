@@ -24,7 +24,7 @@ main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/men
 ##
 ## List here additional static libraries with relative path
 ##
-LIBS :=
+LIBS := -Irapidxml-1.13
 
 ##
 ## List here additional include directories (in the form -Iinclude_dir)

@@ -1,9 +1,11 @@
 #ifndef MENU_H
 #define MENU_H
 #include <string>
+#include <map>
 
 #include "render_object/render_object.h"
 #include "miosix.h"
+#include "render_object/draw_object/draw_object.h"
 
 using namespace std;
 
@@ -25,6 +27,8 @@ class Menu: public RenderObject{
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
         string objects_file_name="";
+        /* Is the map that associated an id to the draw object. */
+        map<string,DrawObject> objectMap;
 };
 
 #endif
