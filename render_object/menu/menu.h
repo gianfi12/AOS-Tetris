@@ -29,6 +29,8 @@ class Menu: public RenderObject{
         string objects_file_name="";
         /* Is the map that associated an id to the draw object. */
         map<string,DrawObject> objectMap;
+        /* This method creates a draw_object that describes the menu screen */
+        DrawObject menu_draw_object();
 };
 
 #endif

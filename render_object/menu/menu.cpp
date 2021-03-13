@@ -33,6 +33,7 @@ Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputM
     ifstream file ("./rendering.xml");
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     buffer.push_back('\0');
+    printf(&buffer[0]);
     // // Parse the buffer using the library into doc
     // doc.parse<0>(&buffer[0]);
     // // Find root node
@@ -56,5 +57,10 @@ RenderObject * Menu::drawFrame() {
     
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
     return NULL;
-}                                                                               
+}
+
+DrawObject menu_draw_object() {
+    DrawObject obj = DrawObject("######## ######## ######## ########  ####  ######\n##    ##          ##    ##     ##  ##  ##    ##\n##    ##          ##    ##     ##  ##  ##\n##    ######      ##    ########   ##   ######\n##    ##          ##    ##   ##    ##        ##\n##    ##          ##    ##    ##   ##  ##    ##\n##    ########    ##    ##     ## ####  ######\n", "\e[0;37m");
+    return obj;
+}
              
