@@ -19,12 +19,12 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp render_object/game/game.cpp 
+main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp render_object/game/game.cpp
 
 ##
 ## List here additional static libraries with relative path
 ##
-LIBS := -Irapidxml-1.13
+LIBS := 
 
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
@@ -49,10 +49,10 @@ OBJ := $(addsuffix .o, $(basename $(SRC)))
 ## Includes the miosix base directory for C/C++
 ## Always include CONFPATH first, as it overrides the config file location
 CXXFLAGS := $(CXXFLAGS_BASE) -I$(CONFPATH) -I$(CONFPATH)/config/$(BOARD_INC)  \
-            -I. -I$(KPATH) -I$(KPATH)/arch/common -I$(KPATH)/$(ARCH_INC)      \
+            -I. -I$(KPATH) -I$(KPATH)/arch/common -I$(KPATH)/$(ARCH_INC)  -ggdb -O0     \
             -I$(KPATH)/$(BOARD_INC) $(INCLUDE_DIRS)
 CFLAGS   := $(CFLAGS_BASE)   -I$(CONFPATH) -I$(CONFPATH)/config/$(BOARD_INC)  \
-            -I. -I$(KPATH) -I$(KPATH)/arch/common -I$(KPATH)/$(ARCH_INC)      \
+            -I. -I$(KPATH) -I$(KPATH)/arch/common -I$(KPATH)/$(ARCH_INC)  -ggdb -O0    \
             -I$(KPATH)/$(BOARD_INC) $(INCLUDE_DIRS)
 AFLAGS   := $(AFLAGS_BASE)
 LFLAGS   := $(LFLAGS_BASE)

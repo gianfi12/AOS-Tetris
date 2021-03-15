@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>                                                              
 
-Terminal::Terminal():col(0),row(0){
+Terminal::Terminal(InputManager * inputManager):col(0),row(0),inputManager(inputManager){
     setTerminalMode();
     refreshColAndRow();
 }
@@ -30,13 +30,14 @@ int Terminal::refreshColAndRow(){
     // printf("\x1b%d",7);
     //Set position to the bottom right of the screen
     printf("\x1b[999;999H\n");
+    inputManager->startTerminalSequence((char)ESC,'R');
     //Print the actual position fo the cursor on the screen
     printf("\x1b[6n\n");
     fflush(stdout);
     // Read from stdin the output of the previous character
     for( i = 0, ch = 0; ch != 'R'; i++ )
     {
-        ch = getchar();
+        ch = inputManager->getLastCharForTerminal();
         buf[i] = ch;
     }
     //Compute the value of x and y from the characters inside buf
@@ -59,10 +60,10 @@ void Terminal::getPos(int *row, int *col){
     *col = this->col;
 }
 
-void Terminal::positionCursorForStartDrawing(int row, int col){
+void Terminal::positionCursorForStartDrawing(int posRow, int posCol){
     int startingRow = (row-ROW_TETRIS)/2+1;
     int startingCol = (col-COL_TETRIS)/2+1;
-    printf("\x1b[%d;%dH",startingRow+row,startingCol+col);
+    printf("\x1b[%d;%dH",startingRow+posRow,startingCol+posCol);
     fflush(stdout);
     // //Set text color
     // printf("%s",BLU);
@@ -81,22 +82,26 @@ void Terminal::positionCursorForStartDrawing(int row, int col){
 }
 
 void Terminal::drawOnScreen(DrawObject drawObject, int writingRow, int writingCol){ 
-    positionCursorForStartDrawing(writingRow,writingCol);
     printf(drawObject.getObjectColor().c_str());
-    printf(drawObject.getObjectString().c_str());
-    fflush(stdout);
-    //TODO print only the content of printString starting from writingRow and writingCol.                                                            
-    // printf("\x1b[0m");                                                          
-    // string line;    
-    // std::fstream file(file_name);                                               
-    // while(std::getline(file, line)) {                                           
-    //     printf("%s %d %d\n", line.c_str(), writingRow, writingCol);                   
-    //     fflush(stdout);                                                         
-    //     writingRow++;                                                           
-    // }                                                                           
+    positionCursorForStartDrawing(writingRow,writingCol);
+
+    string drawString = drawObject.getObjectString();
+    int startSub = 0; 
+    for(int i = 0; i<drawString.size();i++){
+        if(drawString[i]=='\n'){
+            printf("%s",drawString.substr(startSub,i+1-startSub).c_str());
+            fflush(stdout);
+            startSub=i+1;
+            writingRow = writingRow+1;
+            positionCursorForStartDrawing(writingRow,writingCol);
+        }
+    }
+    fflush(stdout);                                                                         
 }          
 
 void Terminal::resetScreen(){
     printf("\x1b[0m");
     printf("\x1b[2J");
+    fflush(stdout);
+    return;
 }

@@ -11,19 +11,8 @@ void Game::updateState(char c){
     //TODO update the state based on the received char c
 }
 
-void readAndUpdateGame(void *argv){
-    Game * game = (Game*)argv;
-    InputManager * inputManager = game->inputManager;
-    while (!inputManager->isDone)
-    {
-        char incomingChar = inputManager->getLastChar();
-        game->updateState(incomingChar);
-    }   
-}
 
 Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal){
-    //TODO open and parse the file that is saved as objects_file_name
-    t = Thread::create(readAndUpdateGame ,2048,1,(void*)this,Thread::JOINABLE);
 };     
 
 Game::~Game(){

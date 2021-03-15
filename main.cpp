@@ -2,14 +2,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
-// #include <csignal>
-// #include <signal.h>
 #include "miosix.h"
 
 #include <fcntl.h>
 #include "terminal/terminal.h"
-#include "terminal/utility.h"
-#include "render_object/render_object.h"
 #include "render_object/menu/menu.h"
 #include "terminal/input_manager.h"
 
@@ -17,25 +13,20 @@
 using namespace std;
 using namespace miosix;
 
-
-
-bool isDone;
-
 int main()
 {
     int row = 0, col = 0;
 
     InputManager inputManager;
-    Terminal terminal;
+    Terminal terminal(&inputManager);
     terminal.getPos(&row,&col);
     if(row<ROW_TETRIS || col<COL_TETRIS){
         printf("The terminal size is not enough, exiting.\n");
         return -1;
     }
 
-    Menu menu(&inputManager, &terminal);
-    RenderObject * actualRenderObject = &menu;
-    while (isDone)
+    RenderObject * actualRenderObject = new Menu(&inputManager, &terminal);
+    while (!isDone)
     {
         terminal.resetScreen();
         //TODO check the condition if a signal handler can be used.
@@ -44,7 +35,7 @@ int main()
             delete actualRenderObject;
             actualRenderObject = returnedRenderObject;
         }
-        // Thread::sleep(500);
+        Thread::sleep(500);
     }
     
 
@@ -57,6 +48,7 @@ int main()
     //TODO: use instead the main loop in order to draw frames
     //TODO: use external file to draw each object, and pass the content to this file at a function like drawObject() that move the cursor where to write on screen for represents this object and takes also the color of them and where to leave the cursor at the end
     //TODO: set the screen dimension fixed to a 50x50 and then center it in other cases?
-
+    delete actualRenderObject;
+    terminal.resetScreen();
     return 0;
 }

@@ -1,8 +1,12 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include <atomic>
+
+using namespace std;
+
 /* Define here used global variables */
-extern bool isDone;
+extern atomic<bool> isDone;
 
 /* Key mapping defintion */
 #define ARROW_UP 65
@@ -10,7 +14,8 @@ extern bool isDone;
 #define ARROW_LEFT 68
 #define ARROW_RIGHT 67
 #define NULL_CHAR " "
-#define ESCAPE 27
+#define ESCAPE 113 //press q to exit the game
+#define ESC 27
 #define CTRLC 3
 
 /* Terminal settings defintion */

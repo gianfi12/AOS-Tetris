@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include "menu.h"
 #include "../../rapidxml-1.13/rapidxml.hpp"
 
@@ -8,42 +9,16 @@ using namespace std;
 using namespace miosix;
                                                                                 
 void Menu::updateState(char c){
+    int charToInt = (int)c;
     //TODO update the state based on the received char c
-}
-
-void readAndUpdateMenu(void *argv){
-    Menu * menu = (Menu*)argv;
-    InputManager * inputManager = menu->inputManager;
-    while (!inputManager->isDone)
-    {
-        char incomingChar = inputManager->getLastChar();
-        menu->updateState(incomingChar);
-    }   
+    if(c==10){
+        printf("prova");
+    }
 }
 
 
 Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal){
-    //TODO open and parse the file that is saved as objects_file_name
-    // Following RapidXml guide and this example https://gist.github.com/JSchaenzle/2726944
-    // Starts the updateState thread
-    t = Thread::create(readAndUpdateMenu ,2048,1,(void*)this,Thread::JOINABLE);
-    // xml_document<> doc;
-    // xml_node<> * root_node;
-    // // Reading the xml file into a vector
-    ifstream file ("./rendering.xml");
-    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    buffer.push_back('\0');
-    printf(&buffer[0]);
-    // // Parse the buffer using the library into doc
-    // doc.parse<0>(&buffer[0]);
-    // // Find root node
-    // root_node = doc.first_node("root");
-    // xml_node<> * node = root_node -> first_node("menu") -> first_node("ascii_art");
-    // string color = root_node -> first_attribute("color") -> value();
-    // string ascii_art = root_node -> value();
-    // string title = root_node -> first_attribute("id") -> value();
-    // DrawObject titleObject(ascii_art,color);
-    // objectMap.insert( {title,titleObject} );
+    menu_draw_objects();
 };     
 
 Menu::~Menu(){
@@ -54,13 +29,36 @@ Menu::~Menu(){
 RenderObject * Menu::drawFrame() {     
     //TODO decide which elements to be selected for printing from the objects file.    
     terminal->drawOnScreen(objectMap.at("title"), 0, 0);
+
+    terminal->drawOnScreen(objectMap.at("playGame"), 20, 12);
     
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
     return NULL;
 }
 
-DrawObject menu_draw_object() {
-    DrawObject obj = DrawObject("######## ######## ######## ########  ####  ######\n##    ##          ##    ##     ##  ##  ##    ##\n##    ##          ##    ##     ##  ##  ##\n##    ######      ##    ########   ##   ######\n##    ##          ##    ##   ##    ##        ##\n##    ##          ##    ##    ##   ##  ##    ##\n##    ########    ##    ##     ## ####  ######\n", "\e[0;37m");
-    return obj;
+void Menu::menu_draw_objects() {
+    string title =  "######## ######## ######## ########  ####  ######\n"
+                    "   ##    ##          ##    ##     ##  ##  ##    ##\n"
+                    "   ##    ##          ##    ##     ##  ##  ##\n"
+                    "   ##    ######      ##    ########   ##   ######\n"
+                    "   ##    ##          ##    ##   ##    ##        ##\n"
+                    "   ##    ##          ##    ##    ##   ##  ##    ##\n"
+                    "   ##    ########    ##    ##     ## ####  ######\n";
+    
+    string titleConverted;
+    for(int i=0;i<title.size();i++){
+        if(title[i]=='#'){
+            titleConverted = titleConverted.append(BLOCK); 
+        }else{
+            string s(1,title[i]);
+            titleConverted = titleConverted.append(s); 
+        }
+    }   
+    DrawObject obj = DrawObject(titleConverted, BLU);
+    objectMap.insert( {"title",obj} );
+
+    string playGame = "Press enter to play the game!\n";
+    obj = DrawObject(playGame, RED);
+    objectMap.insert( {"playGame",obj} );
 }
              

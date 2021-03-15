@@ -5,6 +5,7 @@
 #include "terminal/input_manager.h"
 #include "terminal/terminal.h"
 #include "miosix.h"
+#include "terminal/utility.h"
 
 using namespace std;
 
