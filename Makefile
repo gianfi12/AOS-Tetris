@@ -19,7 +19,7 @@ SUBDIRS := $(KPATH)
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp render_object/game/game.cpp
+main.cpp terminal/terminal.cpp terminal/input_manager.cpp render_object/menu/menu.cpp render_object/render_object.cpp render_object/game/game.cpp render_object/game/tetromino/tetromino.cpp render_object/game/tetromino/tetrominoes/straight_tetromino.cpp
 
 ##
 ## List here additional static libraries with relative path

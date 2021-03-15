@@ -4,9 +4,10 @@ atomic<bool> isDone;
 
 void readChars(void * argv){
     RenderObject * renderObject = (RenderObject*)argv;
-    while(!isDone.load()){
+    bool continueRead = true;
+    while(!isDone.load() && continueRead){
         char lastChar = renderObject->inputManager->getLastChar();
-        renderObject->updateState(lastChar);
+        continueRead = renderObject->updateState(lastChar);
     }
 }
 

@@ -7,15 +7,20 @@ using namespace rapidxml;
 using namespace std;
 using namespace miosix;
                                                                                 
-void Game::updateState(char c){
+bool Game::updateState(char c){
     //TODO update the state based on the received char c
+    return true;
 }
 
 
 Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal){
+    for(int i=0 ; i<ROW_TETRIS ; i++)
+        for(int j=0 ; j<COL_TETRIS ; j++)
+            grid[i][j] = BLK;
 };     
 
 Game::~Game(){
+    
     //TODO check a better way to put the destructor on the parent class.
     //TODO this is not effective if the thread is still waiting from a character to be read.(do a write of the NULL_CHAR?) it is already done in the destructor of the input manager.
 }

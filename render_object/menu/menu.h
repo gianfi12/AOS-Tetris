@@ -4,6 +4,7 @@
 #include <map>
 
 #include "render_object/render_object.h"
+#include "render_object/game/game.h"
 #include "miosix.h"
 #include "render_object/draw_object/draw_object.h"
 
@@ -22,7 +23,7 @@ class Menu: public RenderObject{
         and the returned one has to draw the next frame. */
         RenderObject * drawFrame();
         /* Update the state of the Menu based on the last read char. */
-        void updateState(char c);
+        bool updateState(char c);
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
@@ -31,6 +32,9 @@ class Menu: public RenderObject{
         map<string,DrawObject> objectMap;
         /* This method creates a draw_object that describes the menu screen */
         void menu_draw_objects();
+        /* It is true when the object has to finish its drawing work and pass the drawing to the next
+        render object. */
+        bool switchToNextRenderObject;
 };
 
 #endif

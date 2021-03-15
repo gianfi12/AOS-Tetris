@@ -17,11 +17,13 @@ class Game: public RenderObject{
         and the returned one has to draw the next frame. */
         RenderObject * drawFrame();
         /* Update the state of the Game based on the last read char. */
-        void updateState(char c);
+        bool updateState(char c);
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
         string objects_file_name="";
+        /* Is the grid that contains all the elements of the grid occupied by a tetromino, as a string that higlight the color of this point in the grid. */
+        string grid [ROW_TETRIS] [COL_TETRIS];
 };
 
 #endif

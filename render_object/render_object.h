@@ -20,8 +20,9 @@ class RenderObject{
         virtual ~RenderObject() {};
         /* Render method of the screen through the Terminal. */
         virtual RenderObject * drawFrame() = 0;
-        /* Update the state of the RenderObject based on the last read char. */
-        virtual void updateState(char c) = 0;
+        /* Update the state of the RenderObject based on the last read char. It returns true if the object
+        is continuosly working otherwise with false the readign thread has to be stopped. */
+        virtual bool updateState(char c) = 0;
         /* is the InputManger actually recording the inputs coming from the user. */
         InputManager * inputManager;
     protected:

@@ -17,6 +17,7 @@ extern atomic<bool> isDone;
 #define ESCAPE 113 //press q to exit the game
 #define ESC 27
 #define CTRLC 3
+#define ENTER 13
 
 /* Terminal settings defintion */
 #define COL_TETRIS 65
