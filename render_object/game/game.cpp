@@ -1,9 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "game.h"
-#include "../../rapidxml-1.13/rapidxml.hpp"
 
-using namespace rapidxml;
 using namespace std;
 using namespace miosix;
                                                                                 
@@ -18,6 +16,13 @@ Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputM
         for(int j=0 ; j<COL_TETRIS ; j++)
             grid[i][j] = BLK;
 };     
+
+bool Game::is_legal(int row, int col) {
+    if ((row >= 0 && col >= 0) && (row < ROW_TETRIS && col < COL_TETRIS))
+        if(grid[row][col] == BLK)
+            return true;
+    return false;
+}
 
 Game::~Game(){
     

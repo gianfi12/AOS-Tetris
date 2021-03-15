@@ -2,9 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include "menu.h"
-#include "../../rapidxml-1.13/rapidxml.hpp"
 
-using namespace rapidxml;
 using namespace std;
 using namespace miosix;
                                                                                 

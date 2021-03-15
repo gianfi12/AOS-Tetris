@@ -5,6 +5,8 @@
 #define SHAPE_SIZE 4
 
 #include <string>
+#include "render_object/game/game.h"
+
 
 using namespace std;
 
@@ -13,7 +15,7 @@ using namespace std;
 class Tetromino {
     public:
         /* Constructs an instance of this class. It requires the starting position of the tetromino. */
-        Tetromino(int,int,string);
+        Tetromino(int,int,string, Game);
         /* Destructs an instance of this class. */
         virtual ~Tetromino() {};
 
@@ -25,7 +27,7 @@ class Tetromino {
         void rotateAntiClockwise();
 
         /* Changes the position of the Tetromino after a certain amount of time. */
-        void updatePosition();
+        bool updatePosition();
     protected:
         /* This is the shape of the tetromino. */
         bool shape[SHAPE_SIZE][SHAPE_SIZE];
@@ -34,6 +36,14 @@ class Tetromino {
         int row,col;
         /* This is the color of the tetromino. */
         string color;
+        /* This is the game that the tetromino belongs to */
+        Game game;
+        /* This computes the transpose of a matrix */
+        void transpose(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
+        /* This reverts the rows of a matrix - useful for clockwise rotations */
+        void reverse_rows(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
+        /* This reverts the columns of a matrix - useful for anti-clockwise rotations */
+        void reverse_cols(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
 };
 
 #endif

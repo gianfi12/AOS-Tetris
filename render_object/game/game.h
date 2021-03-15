@@ -18,6 +18,8 @@ class Game: public RenderObject{
         RenderObject * drawFrame();
         /* Update the state of the Game based on the last read char. */
         bool updateState(char c);
+        /* Gives a feedback about a certain element of the grid. */
+        bool is_legal(int row, int col);
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */

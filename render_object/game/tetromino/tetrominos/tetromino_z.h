@@ -1,5 +1,5 @@
-#ifndef STRAIGHTTETROMINO_H
-#define STRAIGHTTETROMINO_H
+#ifndef TETROMINO_Z_H
+#define TETROMINO_Z_H
 
 #include "render_object/game/tetromino/tetromino.h"
 
@@ -7,12 +7,12 @@ using namespace std;
 
 
 /* This is an abstract class providing the same methods for all the different tetrominoes. */
-class StraightTetromino: public Tetromino {
+class Tetromino_z: public Tetromino {
     public:
         /* Constructs an instance of this class.  It requires the starting position of the tetromino. */
-        StraightTetromino(int,int,string);
+        Tetromino_z(int,int,string);
         /* Destructs an instance of this class. */
-        ~StraightTetromino();
+        ~Tetromino_z();
     private:
 };
 
