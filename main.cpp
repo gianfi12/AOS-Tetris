@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <iostream>
 #include "miosix.h"
+#include <time.h>
+#include <stdlib.h>  
 
 #include <fcntl.h>
 #include "terminal/terminal.h"
@@ -15,6 +17,8 @@ using namespace miosix;
 
 int main()
 {
+    srand (time(NULL));
+
     int row = 0, col = 0;
 
     InputManager inputManager;

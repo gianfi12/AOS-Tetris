@@ -2,6 +2,7 @@
 #define TETROMINO_O_H
 
 #include "render_object/game/tetromino/tetromino.h"
+#include "render_object/game/game.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ using namespace std;
 class Tetromino_o: public Tetromino {
     public:
         /* Constructs an instance of this class.  It requires the starting position of the tetromino. */
-        Tetromino_o(int,int,string);
+        Tetromino_o(int,int,string,Game*);
         /* Destructs an instance of this class. */
         ~Tetromino_o();
     private:

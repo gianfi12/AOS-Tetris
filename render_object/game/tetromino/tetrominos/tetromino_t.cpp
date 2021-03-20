@@ -1,6 +1,6 @@
 #include "tetromino_t.h"
 #include "terminal/utility.h"
-Tetromino_t::Tetromino_t(int row, int col, string color, Game game):Tetromino(row,col,color,game){
+Tetromino_t::Tetromino_t(int row, int col, string color, Game *game):Tetromino(row,col,color,game){
     shape[0][0] = false;
     shape[0][1] = false;
     shape[0][2] = false;
@@ -23,3 +23,7 @@ Tetromino_t::Tetromino_t(int row, int col, string color, Game game):Tetromino(ro
 
     color = CYN;
 };
+
+Tetromino_t::~Tetromino_t(){
+    
+}

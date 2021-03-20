@@ -5,6 +5,8 @@
 
 using namespace std;
 
+class Tetromino;
+
 /* This class represents the render object that is responsible for drawing frame during the game. */
 class Game: public RenderObject{
     public:
@@ -20,12 +22,26 @@ class Game: public RenderObject{
         bool updateState(char c);
         /* Gives a feedback about a certain element of the grid. */
         bool is_legal(int row, int col);
+        /* Returns true if the game is finished. */
+        bool getIsGameFinished(){ return isGameFinished; };
+        /* Is the tetromino that is actually sliding down. */
+        Tetromino * activeTetromino;
+        /* Is the next spawned tetromino. */
+        Tetromino * nextTetromino;
+        /* Returns the actual refresh time del terminal. */
+        int getTime(){ return time; };
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
         string objects_file_name="";
         /* Is the grid that contains all the elements of the grid occupied by a tetromino, as a string that higlight the color of this point in the grid. */
         string grid [ROW_TETRIS] [COL_TETRIS];
+        /* Updated time(in milliseconds). */
+        int time;
+        /* Is the thread responsible for the sliding down of the Tetorminoes. */
+        Thread * t;
+        /* Tells if the game is finished. */
+        bool isGameFinished;
 };
 
 #endif

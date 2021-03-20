@@ -5,12 +5,13 @@
 
 using namespace std;
 
+class Game;
 
 /* This is an abstract class providing the same methods for all the different tetrominoes. */
 class Tetromino_z: public Tetromino {
     public:
         /* Constructs an instance of this class.  It requires the starting position of the tetromino. */
-        Tetromino_z(int,int,string);
+        Tetromino_z(int,int,string,Game*);
         /* Destructs an instance of this class. */
         ~Tetromino_z();
     private:
