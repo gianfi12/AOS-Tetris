@@ -55,7 +55,7 @@ void Tetromino::rotateAntiClockwise(){
     // Checking if the rotation is legal; if it is not, returns
     for(int i=0; i<SHAPE_SIZE ; i++)
         for(int j=0; j<SHAPE_SIZE ; j++)
-            if(temp[i][j] == true && !game->is_legal(row + i, col + i))
+            if(temp[i][j] == true && !game->is_legal(row + i, col + j))
                 return;
 
     //Update the shape
@@ -63,15 +63,20 @@ void Tetromino::rotateAntiClockwise(){
 }
 
 bool Tetromino::updatePosition(Direction direction){
-    // Made this method bool so we know when we have to spawn a new tetromino
-    bool temp[SHAPE_SIZE][SHAPE_SIZE];
-    memcpy(temp, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool));
+    // Made this method bool so we know when we have to spawn a new tetromino, update score and eventually remove some rows.
     int addRow,addCol;
     tie(addRow,addCol) = getVectorFromDirection(direction);
-    //TODO check that they can be added otherwise move in only one direction
+
+    /* Checks that the movement is legal. If the movement is towards South and it is illegal, the game returns true (a new tetromino needs to be spawned).
+    If it is not towards South, but still illegal, the method returns false without updating the row and col. */
+    for(int i=0; i<SHAPE_SIZE; i++)
+        for(int j=0; j < SHAPE_SIZE; j++)
+            if(shape[i][j] == true && !game->is_legal(row + i + addRow, col + j + addCol))
+                if(direction == South)
+                    return false;
+                else return true;
     row+=addRow;
     col+=addCol;
-    //TODO implement me
     return false;
 }
 

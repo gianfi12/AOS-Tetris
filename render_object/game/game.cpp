@@ -54,7 +54,10 @@ void updateTetrominoes(void * argv){
             game->activeTetromino = game->nextTetromino;
             game->nextTetromino = getRandomTetromino(game);
         }
-        game->activeTetromino->updatePosition(South);
+        if(game->activeTetromino->updatePosition(South)){ // If true, the tetromino has reached its final position.
+            game->score += game->updateScoreAndGrid();
+            game->activeTetromino = NULL;
+        }
 
         Thread::sleep(game->getTime());
     }
@@ -72,6 +75,51 @@ bool Game::is_legal(int row, int col) {
         if(grid[row][col] == BLK)
             return true;
     return false;
+}
+
+int Game::updateScoreAndGrid() {
+    int streak;     // This is how many row at one time the player canceled.
+    bool allRow;    // This controls that every cell of the row is filled.
+    int flagRow;    // This flags the starting row of the streak.
+    flagRow = -1;
+
+    // This part computes how many rows the player filled, and flags the startingRow.
+    for(int i = 0, streak = 0; i < ROW_TETRIS; i++){
+        for(int j = 0, allRow = true; j < COL_TETRIS; j++) {
+            if(grid[i][j] == BLK)
+                allRow = false;
+        }
+        if(allRow){
+            if(flagRow == -1)
+                flagRow = i;
+            streak++;
+        }
+    }
+
+    // This part recomputes the grid.
+    if(flagRow != -1) {
+        for(int i = 0; i < streak; i++)
+            for(int j = 0; j < COL_TETRIS; j++){
+                grid[i][j] = grid[i + streak][j];
+                grid[i + streak][j] = BLK;
+            }
+    }
+    switch (streak)
+    {
+    case 0:
+        return 0;
+    case 1:
+        return 40;
+    case 2:
+        return 100;
+    case 3:
+        return 300;
+    case 4:
+        return 1200;
+    
+    default:
+        return 0;
+    }
 }
 
 Game::~Game(){

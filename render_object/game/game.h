@@ -30,6 +30,10 @@ class Game: public RenderObject{
         Tetromino * nextTetromino;
         /* Returns the actual refresh time del terminal. */
         int getTime(){ return time; };
+        /* This is the score of the match. */
+        int score=0;
+        /* Computes the score of the turn, and cancels the rows completely filled. */
+        int updateScoreAndGrid();
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
