@@ -27,39 +27,63 @@ void Tetromino::drawTetromino(){
     //TODO draw the tetromino on screen
 }
 
-void Tetromino::rotateClockwise(){
-    bool temp [SHAPE_SIZE] [SHAPE_SIZE];
-    memcpy(temp, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool)); // Coping the matrix into a temporary element
+void Tetromino::rotateAntiClockwise(){
+    bool mat [SHAPE_SIZE] [SHAPE_SIZE];
+    memcpy(mat, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool)); // Coping the matrix into a temporary element
 
     // Rotating the matrix clockwise
-    transpose(temp);
-    reverse_rows(temp);
+    for (int x = 0; x < SHAPE_SIZE / 2; x++) { 
+        for (int y = x; y < SHAPE_SIZE - x - 1; y++) { 
+            int temp = mat[x][y]; 
+  
+            mat[x][y] = mat[y][SHAPE_SIZE - 1 - x]; 
+  
+            mat[y][SHAPE_SIZE - 1 - x] 
+                = mat[SHAPE_SIZE - 1 - x][SHAPE_SIZE - 1 - y]; 
+  
+            mat[SHAPE_SIZE - 1 - x][SHAPE_SIZE - 1 - y] 
+                = mat[SHAPE_SIZE - 1 - y][x]; 
+  
+            mat[SHAPE_SIZE - 1 - y][x] = temp; 
+        } 
+    } 
 
     // Checking if the rotation is legal; if it is not, returns
     for(int i=0; i<SHAPE_SIZE ; i++)
         for(int j=0; j<SHAPE_SIZE ; j++)
-            if(temp[i][j] == true && !game->is_legal(row + i, col + j))
+            if(mat[i][j] == true && !game->is_legal(row + i, col + j))
                 return;
     //Update the shape
-    memcpy(shape, temp, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool));
+    memcpy(shape, mat, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool));
 }
 
-void Tetromino::rotateAntiClockwise(){
-    bool temp [SHAPE_SIZE] [SHAPE_SIZE];
-    memcpy(temp, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool)); // Coping the matrix into a temporary element
+void Tetromino::rotateClockwise(){
+    bool a [SHAPE_SIZE] [SHAPE_SIZE];
+    memcpy(a, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool)); // Coping the matrix into a temporary element
 
     // Rotating the matrix anticlockwise
-    transpose(temp);
-    reverse_cols(temp);
+    int N = SHAPE_SIZE;
+    for (int i = 0; i < N / 2; i++) {
+        for (int j = i; j < N - i - 1; j++) {
+ 
+            // Swap elements of each cycle
+            // in clockwise direction
+            int temp = a[i][j];
+            a[i][j] = a[N - 1 - j][i];
+            a[N - 1 - j][i] = a[N - 1 - i][N - 1 - j];
+            a[N - 1 - i][N - 1 - j] = a[j][N - 1 - i];
+            a[j][N - 1 - i] = temp;
+        }
+    }
 
     // Checking if the rotation is legal; if it is not, returns
     for(int i=0; i<SHAPE_SIZE ; i++)
         for(int j=0; j<SHAPE_SIZE ; j++)
-            if(temp[i][j] == true && !game->is_legal(row + i, col + j))
+            if(a[i][j] == true && !game->is_legal(row + i, col + j))
                 return;
 
     //Update the shape
-    memcpy(shape, temp, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool));
+    memcpy(shape, a, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool));
 }
 
 bool Tetromino::updatePosition(Direction direction){
@@ -73,8 +97,8 @@ bool Tetromino::updatePosition(Direction direction){
         for(int j=0; j < SHAPE_SIZE; j++)
             if(shape[i][j] == true && !game->is_legal(row + i + addRow, col + j + addCol))
                 if(direction == South)
-                    return false;
-                else return true;
+                    return true;
+                else return false;
     row+=addRow;
     col+=addCol;
     return false;
@@ -89,7 +113,7 @@ void Tetromino::transpose(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
 
 void Tetromino::reverse_rows(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
     int k;
-    for (int i = 0; i < SHAPE_SIZE; i++){
+    for (int i = 0; i < SHAPE_SIZE/2; i++){
         k = SHAPE_SIZE - 1;
         for (int j = 0; j < SHAPE_SIZE; j++){
             swap(mat[i][j], mat[i][k]);
@@ -108,4 +132,18 @@ void Tetromino::reverse_cols(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
             swap(mat[j][i], mat[k][i]);
         }
     }
+}
+
+DrawObject Tetromino::toDrawObject(){
+    string s;
+    for(int i=0; i<SHAPE_SIZE; i++){
+        for(int j=0; j<SHAPE_SIZE; j++)
+            if(shape[i][j])
+                s+=BLOCK;
+            else
+                s+=" ";
+        s+="\n";
+    }
+    DrawObject drawObject(s,color);
+    return drawObject;
 }

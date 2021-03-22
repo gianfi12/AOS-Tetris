@@ -29,7 +29,7 @@ class Game: public RenderObject{
         /* Is the next spawned tetromino. */
         Tetromino * nextTetromino;
         /* Returns the actual refresh time del terminal. */
-        int getTime(){ return time; };
+        int getTime(){ return timeSlidingDown; };
         /* This is the score of the match. */
         int score=0;
         /* Computes the score of the turn, and cancels the rows completely filled. */
@@ -41,11 +41,13 @@ class Game: public RenderObject{
         /* Is the grid that contains all the elements of the grid occupied by a tetromino, as a string that higlight the color of this point in the grid. */
         string grid [ROW_TETRIS] [COL_TETRIS];
         /* Updated time(in milliseconds). */
-        int time;
+        int timeSlidingDown;
         /* Is the thread responsible for the sliding down of the Tetorminoes. */
         Thread * t;
         /* Tells if the game is finished. */
         bool isGameFinished;
+        /* Used to get the lock on the drawFrame method. */
+        Mutex m;
 };
 
 #endif

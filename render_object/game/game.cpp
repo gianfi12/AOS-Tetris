@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h> 
+#include <time.h>
 #include "game.h"
 
 #include "render_object/game/tetromino/tetrominos/tetromino_i.h"
@@ -16,12 +17,44 @@ using namespace std;
 using namespace miosix;
                                                                             
 bool Game::updateState(char c){
+    switch (c)
+    {
+    case (int)ROTATE_LEFT:
+        activeTetromino->rotateClockwise();
+        terminal->resetScreen();
+        this->drawFrame();
+        break;
+    case (int)ROTATE_RIGHT:
+        activeTetromino->rotateAntiClockwise();
+        terminal->resetScreen();
+        this->drawFrame();
+        break;
+    case (int)MOVE_DOWN:
+        activeTetromino->updatePosition(South);
+        terminal->resetScreen();
+        this->drawFrame();
+        break;
+    case (int)MOVE_LEFT:
+        activeTetromino->updatePosition(West);
+        terminal->resetScreen();
+        this->drawFrame();
+        break;
+    case (int)MOVE_RIGHT:
+        activeTetromino->updatePosition(East);
+        terminal->resetScreen();
+        this->drawFrame();
+        break;
+    default:
+        break;
+    }
+    
     //TODO update the state based on the received char c
     return true;
 }
 
 
 Tetromino * getRandomTetromino(Game* game){
+        srand (time(NULL));
         int random = rand() % 7;
         switch (random)
         {
@@ -63,7 +96,9 @@ void updateTetrominoes(void * argv){
     }
 }
 
-Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),time(1000){
+Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),timeSlidingDown(1000){
+    nextTetromino = NULL;
+    activeTetromino = NULL;
     for(int i=0 ; i<ROW_TETRIS ; i++)
         for(int j=0 ; j<COL_TETRIS ; j++)
             grid[i][j] = BLK;
@@ -128,13 +163,18 @@ Game::~Game(){
     //TODO this is not effective if the thread is still waiting from a character to be read.(do a write of the NULL_CHAR?) it is already done in the destructor of the input manager.
 }
                                                                                 
-RenderObject * Game::drawFrame() {     
+RenderObject * Game::drawFrame() {   
+    Lock<Mutex> lock(m);  
     //TODO decide which elements to be selected for printing from the objects file.    
     // terminal->drawOnScreen("", 0, 0);
     
-    //TODO draw the tetromino.
+    //TODO draw the tetromino and the grid altogether.
+    int rowT, colT;
+    tie(rowT,colT) = activeTetromino->getPosition();
+    //TODO remember to add the offset for the point bar
+    terminal->drawOnScreen(activeTetromino->toDrawObject(), rowT, colT);
 
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
-    return NULL;
+    return NULL; 
 }                                                                               
              

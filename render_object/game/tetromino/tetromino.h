@@ -7,6 +7,7 @@
 #include <string>
 #include <tuple>
 #include "render_object/game/game.h"
+#include "render_object/draw_object/draw_object.h"
 
 using namespace std;
 
@@ -31,8 +32,15 @@ class Tetromino {
         /* Rotate the tetromino in an anti-clockwise way. */
         void rotateAntiClockwise();
 
-        /* Changes the position of the Tetromino after a certain amount of time. */
+        /* Returns a string that should be printed on screen. */
+        DrawObject toDrawObject();
+
+        /* Changes the position of the Tetromino after a certain amount of time. 
+        Returns true if the tetromino has reached the lower bottom and a new one has to be spawned.*/
         bool updatePosition(Direction Direction);
+
+        /* Returns a tuple with the row and column of such a Tetromino on the grid. */
+        tuple<int,int> getPosition() { return {row,col}; };
     protected:
         /* This is the shape of the tetromino. */
         bool shape[SHAPE_SIZE][SHAPE_SIZE];

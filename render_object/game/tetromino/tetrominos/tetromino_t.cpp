@@ -20,8 +20,6 @@ Tetromino_t::Tetromino_t(int row, int col, string color, Game *game):Tetromino(r
     shape[3][1] = false;
     shape[3][2] = false;
     shape[3][3] = false;
-
-    color = CYN;
 };
 
 Tetromino_t::~Tetromino_t(){

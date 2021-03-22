@@ -4,7 +4,7 @@
 #include <iostream>
 #include "miosix.h"
 #include <time.h>
-#include <stdlib.h>  
+#include <stdlib.h>     
 
 #include <fcntl.h>
 #include "terminal/terminal.h"

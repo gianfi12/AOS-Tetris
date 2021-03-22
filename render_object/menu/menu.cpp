@@ -17,7 +17,7 @@ bool Menu::updateState(char c){
 }
 
 
-Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal){
+Menu::Menu(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),switchToNextRenderObject(false){
     menu_draw_objects();
 };     
 

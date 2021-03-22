@@ -14,6 +14,14 @@ extern atomic<bool> isDone;
 #define ARROW_LEFT 68
 #define ARROW_RIGHT 67
 #define NULL_CHAR " "
+#define A 97
+#define S 115
+
+#define ROTATE_LEFT A
+#define ROTATE_RIGHT S
+#define MOVE_LEFT ARROW_LEFT
+#define MOVE_RIGHT ARROW_RIGHT
+#define MOVE_DOWN ARROW_DOWN
 #define ESCAPE 113 //press q to exit the game
 #define ESC 27
 #define CTRLC 3
