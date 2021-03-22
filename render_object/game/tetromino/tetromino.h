@@ -39,6 +39,9 @@ class Tetromino {
         Returns true if the tetromino has reached the lower bottom and a new one has to be spawned.*/
         bool updatePosition(Direction Direction);
 
+        /* Returns the color of the tetromino. */
+        string getColor() {return color;}
+
         /* Returns a tuple with the row and column of such a Tetromino on the grid. */
         tuple<int,int> getPosition() { return {row,col}; };
     protected:
@@ -51,12 +54,6 @@ class Tetromino {
         string color;
         /* This is the game that the tetromino belongs to */
         Game * game;
-        /* This computes the transpose of a matrix */
-        void transpose(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
-        /* This reverts the rows of a matrix - useful for clockwise rotations */
-        void reverse_rows(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
-        /* This reverts the columns of a matrix - useful for anti-clockwise rotations */
-        void reverse_cols(bool mat[SHAPE_SIZE][SHAPE_SIZE]);
 };
 
 #endif

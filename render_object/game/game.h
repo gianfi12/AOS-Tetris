@@ -34,6 +34,8 @@ class Game: public RenderObject{
         int score=0;
         /* Computes the score of the turn, and cancels the rows completely filled. */
         int updateScoreAndGrid();
+        /* This method lets add a cell to the grid. */
+        void addCellToGrid(int row, int col, string color);
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
@@ -48,6 +50,8 @@ class Game: public RenderObject{
         bool isGameFinished;
         /* Used to get the lock on the drawFrame method. */
         Mutex m;
+        /* This method creates the DrawObject of the grid. */
+        DrawObject gridToDrawObject(string grid[ROW_TETRIS][COL_TETRIS]);
 };
 
 #endif

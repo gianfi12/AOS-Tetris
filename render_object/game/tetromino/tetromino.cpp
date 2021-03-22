@@ -62,17 +62,16 @@ void Tetromino::rotateClockwise(){
     memcpy(a, shape, SHAPE_SIZE*SHAPE_SIZE*sizeof(bool)); // Coping the matrix into a temporary element
 
     // Rotating the matrix anticlockwise
-    int N = SHAPE_SIZE;
-    for (int i = 0; i < N / 2; i++) {
-        for (int j = i; j < N - i - 1; j++) {
+    for (int i = 0; i < SHAPE_SIZE / 2; i++) {
+        for (int j = i; j < SHAPE_SIZE - i - 1; j++) {
  
             // Swap elements of each cycle
             // in clockwise direction
             int temp = a[i][j];
-            a[i][j] = a[N - 1 - j][i];
-            a[N - 1 - j][i] = a[N - 1 - i][N - 1 - j];
-            a[N - 1 - i][N - 1 - j] = a[j][N - 1 - i];
-            a[j][N - 1 - i] = temp;
+            a[i][j] = a[SHAPE_SIZE - 1 - j][i];
+            a[SHAPE_SIZE - 1 - j][i] = a[SHAPE_SIZE - 1 - i][SHAPE_SIZE - 1 - j];
+            a[SHAPE_SIZE - 1 - i][SHAPE_SIZE - 1 - j] = a[j][SHAPE_SIZE - 1 - i];
+            a[j][SHAPE_SIZE - 1 - i] = temp;
         }
     }
 
@@ -87,7 +86,6 @@ void Tetromino::rotateClockwise(){
 }
 
 bool Tetromino::updatePosition(Direction direction){
-    // Made this method bool so we know when we have to spawn a new tetromino, update score and eventually remove some rows.
     int addRow,addCol;
     tie(addRow,addCol) = getVectorFromDirection(direction);
 
@@ -95,43 +93,22 @@ bool Tetromino::updatePosition(Direction direction){
     If it is not towards South, but still illegal, the method returns false without updating the row and col. */
     for(int i=0; i<SHAPE_SIZE; i++)
         for(int j=0; j < SHAPE_SIZE; j++)
-            if(shape[i][j] == true && !game->is_legal(row + i + addRow, col + j + addCol))
-                if(direction == South)
+            if(shape[i][j] == true && !game->is_legal(row + i + addRow, col + j + addCol)){
+                if(direction == South) {
+
+                    // If the direction is South, it means that I have to save the tetromino in the grid.
+                    for(int h = 0; h < SHAPE_SIZE; h++)
+                        for(int k = 0; k <SHAPE_SIZE; k++)
+                            if(shape[h][k])
+                                game->addCellToGrid(h, k, color);
                     return true;
-                else return false;
+                }
+                
+                return false;
+            }
     row+=addRow;
     col+=addCol;
     return false;
-}
-
-void Tetromino::transpose(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
-    for (int i = 0; i < SHAPE_SIZE; i++)
-        for (int j = 0; j < SHAPE_SIZE; j++){
-            swap(mat[i][j], mat[j][i]);
-        }
-}
-
-void Tetromino::reverse_rows(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
-    int k;
-    for (int i = 0; i < SHAPE_SIZE/2; i++){
-        k = SHAPE_SIZE - 1;
-        for (int j = 0; j < SHAPE_SIZE; j++){
-            swap(mat[i][j], mat[i][k]);
-            k--;
-        }
-        
-    }
-    
-}
-
-void Tetromino::reverse_cols(bool mat[SHAPE_SIZE][SHAPE_SIZE]){
-    int k;
-    for(int i = 0; i < SHAPE_SIZE; i++) {
-        k = SHAPE_SIZE - 1;
-        for(int j = 0; j < k; j++) {
-            swap(mat[j][i], mat[k][i]);
-        }
-    }
 }
 
 DrawObject Tetromino::toDrawObject(){
