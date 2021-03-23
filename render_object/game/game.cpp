@@ -110,6 +110,7 @@ void updateTetrominos(void * argv){
     Game * game = (Game*)argv;
     bool continueRead = true;
     while(!isDone.load() && !game->getIsGameFinished()){
+        game->m_activeTetromino.lock();
         if(game->nextTetromino==NULL){
             game->nextTetromino = getRandomTetromino(game);
         }
@@ -119,8 +120,10 @@ void updateTetrominos(void * argv){
         }
         if(game->activeTetromino->updatePosition(South)){ // If true, the tetromino has reached its final position.
             game->score += game->updateScoreAndGrid();
-            game->activeTetromino = NULL;
+            game->activeTetromino = game->nextTetromino;
+            game->nextTetromino = getRandomTetromino(game);
         }
+        game->m_activeTetromino.unlock();
 
         Thread::sleep(game->getTime());
     }
@@ -149,6 +152,7 @@ int Game::updateScoreAndGrid() {
     int flagRow;    // This flags the starting row of the streak.
     flagRow = -1;
 
+    //TODO maybe we can use only the row that are occupied by the shape of the actualTetromino
     // This part computes how many rows the player filled, and flags the startingRow.
     for(int i = 0, streak = 0; i < ROW_TETRIS; i++){
         for(int j = 0, allRow = true; j < COL_TETRIS; j++) {
@@ -219,10 +223,15 @@ RenderObject * Game::drawFrame() {
     // terminal->drawOnScreen("", 0, 0);
     
     //TODO draw the tetromino and the grid altogether.
+    m_activeTetromino.lock();
     int rowT, colT;
     tie(rowT,colT) = activeTetromino->getPosition();
-    terminal->drawOnScreen(activeTetromino->toDrawObject(), rowT + GRID_OFFSET, colT);
+    // terminal->drawOnScreen(activeTetromino->toDrawObject(), rowT + GRID_OFFSET, colT);
+    terminal->drawOnScreenMovingCursor(activeTetromino->toDrawObject(), rowT + GRID_OFFSET, colT,BLOCK);
+    m_activeTetromino.unlock();
 
+
+    //TODO print a bar to indicate the end of the grid
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
     return NULL; 
 }                                                                               

@@ -91,3 +91,37 @@ void Terminal::resetScreen(){
     fflush(stdout);
     return;
 }
+
+void Terminal::drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, int writingCol, string substringToCheck){
+    printf(drawObject.getObjectColor().c_str());
+    positionCursorForStartDrawing(writingRow,writingCol);
+
+    string drawString = drawObject.getObjectString();
+    int startSub = 0; 
+    int colIndex = 0;
+    for(int i = 0; i<drawString.size();i++){
+        if(drawString[i]=='\n'){
+            writingRow++;
+            colIndex=0;
+            // printf("%s",drawString.substr(startSub,i+1-startSub).c_str());
+            // fflush(stdout);
+            // startSub=i+1;
+            // writingRow = writingRow+1;
+            // positionCursorForStartDrawing(writingRow,writingCol);
+        }else if(drawString[i]!=' '){
+            bool found = true;
+            for(int j=0; j<substringToCheck.size() && found; j++){
+                if(drawString[i+j]!=substringToCheck[j])
+                    found = false;
+            }
+            if(found){
+                colIndex++;
+                positionCursorForStartDrawing(writingRow,writingCol+colIndex);
+                printf("%s",substringToCheck.c_str());
+            }
+        }else{
+            colIndex++;
+        }
+    }
+    fflush(stdout);   
+}

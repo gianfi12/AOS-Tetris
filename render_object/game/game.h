@@ -36,6 +36,9 @@ class Game: public RenderObject{
         int updateScoreAndGrid();
         /* This method lets add a cell to the grid. */
         void addCellToGrid(int row, int col, string color);
+
+        /* Used to get the lock on the drawFrame method. */
+        Mutex m,m_activeTetromino;
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
@@ -48,10 +51,13 @@ class Game: public RenderObject{
         Thread * t;
         /* Tells if the game is finished. */
         bool isGameFinished;
-        /* Used to get the lock on the drawFrame method. */
-        Mutex m;
         /* This method creates the DrawObject of the grid. */
         DrawObject gridToDrawObject(string grid[ROW_TETRIS][COL_TETRIS]);
+
+        /* Recompute the saved draw object of the grid after a change in it: when
+        a previous active tetromino is now attached to it. */
+        void recomputeDrawObjectFromGrid();
+        DrawObject * gridDrawObject;
 };
 
 #endif
