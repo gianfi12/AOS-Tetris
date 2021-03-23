@@ -144,32 +144,47 @@ bool Game::is_legal(int row, int col) {
 
 int Game::updateScoreAndGrid() {
 
-    int streak;     // This is how many row at one time the player canceled.
+    int streak, temp;     // This is how many row at one time the player canceled.
     bool allRow;    // This controls that every cell of the row is filled.
-    int flagRow;    // This flags the starting row of the streak.
-    flagRow = -1;
+    int flagRows[SHAPE_SIZE] = {-1, -1, -1, -1};    // This flags the rows of the streak.
+    bool found;
 
     // This part computes how many rows the player filled, and flags the startingRow.
-    for(int i = 0, streak = 0; i < ROW_TETRIS; i++){
+    for(int i = 0, streak = 0; i < SHAPE_SIZE; i++){
+        temp = get<0>(activeTetromino->getPosition());      // In this way I get the row of the tetromino.
+
         for(int j = 0, allRow = true; j < COL_TETRIS; j++) {
-            if(grid[i][j] == BLK)
+            if(grid[i + temp][j] == BLK)
                 allRow = false;
         }
         if(allRow){
-            if(flagRow == -1)
-                flagRow = i;
+            flagRows[i] = i + temp;
             streak++;
         }
     }
 
     // This part recomputes the grid.
-    if(flagRow != -1) {
-        for(int i = 0; i < streak; i++)
-            for(int j = 0; j < COL_TETRIS; j++){
-                grid[i][j] = grid[i + streak][j];
-                grid[i + streak][j] = BLK;
-            }
-    }
+    for(int i = 0; i < SHAPE_SIZE; i++)
+        if(flagRows[i] !=-1){
+            temp = flagRows[i];
+            found = true;
+            // Now I have to get the first non-filled row.
+            do {
+                temp--;
+                // Search again in the flagRows array to check that that row isn't also filled.
+                for(int k = 0, found = false; k < SHAPE_SIZE && !found; k++){
+                    if(flagRows[k] == temp)
+                        found = true;
+                }
+                if(!found) {        // This means that this candidate row is adequate for the substitution.
+                    for(int j = 0; j < COL_TETRIS; j++) {
+                        grid[flagRows[i]][j] = grid[i + temp][j];
+                        grid[i + temp][j] = BLK;
+                    }
+                }
+            } while(found);
+        }
+
     switch (streak)
     {
     case 0:
