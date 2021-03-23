@@ -54,6 +54,8 @@ class Game: public RenderObject{
         Thread * t;
         /* Tells if the game is finished. */
         bool isGameFinished;
+        /* This method returns the DrawObject of the score. */
+        DrawObject scoreDrawObject();
 };
 
 #endif

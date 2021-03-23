@@ -152,13 +152,14 @@ int Game::updateScoreAndGrid() {
     bool allRow;    // This controls that every cell of the row is filled.
     int flagRows[SHAPE_SIZE] = {-1, -1, -1, -1};    // This flags the rows of the streak.
     bool found;
+    streak = 0;
 
     // This part computes how many rows the player filled, and flags the startingRow.
-    for(int i = 0, streak = 0; i < SHAPE_SIZE; i++){
+    for(int i = 0, temp = 0; i < SHAPE_SIZE && (i + temp) < ROW_TETRIS; i++){
         temp = get<0>(activeTetromino->getPosition());      // In this way I get the row of the tetromino.
 
-        for(int j = 0, allRow = true; j < COL_TETRIS; j++) {
-            if(grid[i + temp][j] == BLK)
+        for(int j = 0, allRow = true; j < COL_TETRIS && allRow; j++) {
+            if(grid[i + temp][j] != WHT || grid[i + temp][j] != RED || grid[i + temp][j] != CYN || grid[i + temp][j] != GRN || grid[i + temp][j] != BLU || grid[i + temp][j] != MAG || grid[i + temp][j] != YEL)
                 allRow = false;
         }
         if(allRow){
@@ -218,17 +219,10 @@ Game::~Game(){
     //TODO this is not effective if the thread is still waiting from a character to be read.(do a write of the NULL_CHAR?) it is already done in the destructor of the input manager.
 }
 
-DrawObject gridToDrawObject(string grid[GRID_ROW][GRID_COL]){
-    // TODO How to deal with different colors?
-    string drawString;
-    for(int i = 0; i < GRID_ROW; i++){
-        for(int j = 0; j < GRID_COL; j++)
-            if(grid[i][j] == BLK)
-                drawString += ' ';
-            else drawString += BLOCK;
-        drawString += '\n';
-    }
-    return DrawObject(drawString, WHT);
+DrawObject Game::scoreDrawObject() {
+    string scoreString = "SCORE:\n";
+    scoreString += to_string(score);
+    return DrawObject(scoreString, WHT);
 }
 
                                                                                 
