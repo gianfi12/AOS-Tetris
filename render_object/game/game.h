@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define GRID_ROW (ROW_TETRIS-GRID_OFFSET)
+#define GRID_COL COL_TETRIS
+
 #include "render_object/render_object.h"
 
 using namespace std;
@@ -44,20 +47,13 @@ class Game: public RenderObject{
         used by this class. */
         string objects_file_name="";
         /* Is the grid that contains all the elements of the grid occupied by a tetromino, as a string that higlight the color of this point in the grid. */
-        string grid [ROW_TETRIS] [COL_TETRIS];
+        string grid [GRID_ROW] [GRID_COL];
         /* Updated time(in milliseconds). */
         int timeSlidingDown;
         /* Is the thread responsible for the sliding down of the Tetorminoes. */
         Thread * t;
         /* Tells if the game is finished. */
         bool isGameFinished;
-        /* This method creates the DrawObject of the grid. */
-        DrawObject gridToDrawObject(string grid[ROW_TETRIS][COL_TETRIS]);
-
-        /* Recompute the saved draw object of the grid after a change in it: when
-        a previous active tetromino is now attached to it. */
-        void recomputeDrawObjectFromGrid();
-        DrawObject * gridDrawObject;
 };
 
 #endif

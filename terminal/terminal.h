@@ -36,6 +36,8 @@ class Terminal{
         void resetScreen();
         /* Draw on screen the DrawObject by moving the cursor only where the string has the substringToCheck. */
         void drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, int writingCol, string substringToCheck);
+        /* Draw the given 2D grid of colors on screen. */
+        void draw2DGridOfColorOnScreen(string * grid, int totalRow, int totalCol, int startingRow, int startingCol, string printingChar);
     private:
         /* Set the terminal mode used to display character to the end user */
         void setTerminalMode();

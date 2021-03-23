@@ -103,11 +103,6 @@ void Terminal::drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, i
         if(drawString[i]=='\n'){
             writingRow++;
             colIndex=0;
-            // printf("%s",drawString.substr(startSub,i+1-startSub).c_str());
-            // fflush(stdout);
-            // startSub=i+1;
-            // writingRow = writingRow+1;
-            // positionCursorForStartDrawing(writingRow,writingCol);
         }else if(drawString[i]!=' '){
             bool found = true;
             for(int j=0; j<substringToCheck.size() && found; j++){
@@ -124,4 +119,20 @@ void Terminal::drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, i
         }
     }
     fflush(stdout);   
+}
+
+void Terminal::draw2DGridOfColorOnScreen(string * grid, int totalRow, int totalCol, int startingRow, int startingCol, string printingChar){
+    string actualColor = "";
+    for(int i=0; i<totalRow; i++)
+        for(int j=0; j<totalCol; j++){
+            if(grid[j+i*totalCol]!=BLK){
+                if(actualColor==" " || actualColor!=grid[j+i*totalCol]){
+                    actualColor = grid[j+i*totalCol];
+                    printf(actualColor.c_str());
+                }
+                positionCursorForStartDrawing(startingRow+i,startingCol+j);
+                printf(printingChar.c_str());
+            }
+        }
+    fflush(stdout);
 }

@@ -120,6 +120,7 @@ void updateTetrominos(void * argv){
         }
         if(game->activeTetromino->updatePosition(South)){ // If true, the tetromino has reached its final position.
             game->score += game->updateScoreAndGrid();
+            delete game->activeTetromino;
             game->activeTetromino = game->nextTetromino;
             game->nextTetromino = getRandomTetromino(game);
         }
@@ -132,14 +133,14 @@ void updateTetrominos(void * argv){
 Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),timeSlidingDown(1000){
     nextTetromino = NULL;
     activeTetromino = NULL;
-    for(int i=0 ; i<ROW_TETRIS ; i++)
-        for(int j=0 ; j<COL_TETRIS ; j++)
+    for(int i=0 ; i<GRID_ROW ; i++)
+        for(int j=0 ; j<GRID_COL ; j++)
             grid[i][j] = BLK;
     t = Thread::create(updateTetrominos,2048,1,(void*)this,Thread::JOINABLE);
 };     
 
 bool Game::is_legal(int row, int col) {
-    if ((row >= 0 && col >= 0) && (row < ROW_TETRIS && col < COL_TETRIS))
+    if ((row >= 0 && col >= 0) && (row < GRID_ROW && col < GRID_COL))
         if(grid[row][col] == BLK)
             return true;
     return false;
@@ -152,7 +153,6 @@ int Game::updateScoreAndGrid() {
     int flagRows[SHAPE_SIZE] = {-1, -1, -1, -1};    // This flags the rows of the streak.
     bool found;
 
-    //TODO maybe we can use only the row that are occupied by the shape of the actualTetromino
     // This part computes how many rows the player filled, and flags the startingRow.
     for(int i = 0, streak = 0; i < SHAPE_SIZE; i++){
         temp = get<0>(activeTetromino->getPosition());      // In this way I get the row of the tetromino.
@@ -218,11 +218,11 @@ Game::~Game(){
     //TODO this is not effective if the thread is still waiting from a character to be read.(do a write of the NULL_CHAR?) it is already done in the destructor of the input manager.
 }
 
-DrawObject gridToDrawObject(string grid[ROW_TETRIS][COL_TETRIS]){
+DrawObject gridToDrawObject(string grid[GRID_ROW][GRID_COL]){
     // TODO How to deal with different colors?
     string drawString;
-    for(int i = 0; i < ROW_TETRIS; i++){
-        for(int j = 0; j < COL_TETRIS; j++)
+    for(int i = 0; i < GRID_ROW; i++){
+        for(int j = 0; j < GRID_COL; j++)
             if(grid[i][j] == BLK)
                 drawString += ' ';
             else drawString += BLOCK;
@@ -236,7 +236,9 @@ RenderObject * Game::drawFrame() {
     Lock<Mutex> lock(m);  
     //TODO decide which elements to be selected for printing from the objects file.    
     // terminal->drawOnScreen("", 0, 0);
+    terminal->resetScreen();
     
+    terminal->draw2DGridOfColorOnScreen(*grid,GRID_ROW,GRID_COL,GRID_OFFSET,0,BLOCK);
     //TODO draw the tetromino and the grid altogether.
     m_activeTetromino.lock();
     int rowT, colT;
