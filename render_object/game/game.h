@@ -41,7 +41,13 @@ class Game: public RenderObject{
         void addCellToGrid(int row, int col, string color);
 
         /* Used to get the lock on the drawFrame method. */
-        Mutex m,m_activeTetromino;
+        Mutex m,m_activeTetromino, m_grid;
+
+
+        /* Is the reference to the previous drawned tetromino. */
+        DrawObject * actualDrawnedTetromino;
+        /* Save also the row and the col where you have drawned the previous tetromino. */
+        int prevCol, prevRow;
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
@@ -56,6 +62,8 @@ class Game: public RenderObject{
         bool isGameFinished;
         /* This method returns the DrawObject of the score. */
         DrawObject scoreDrawObject();
+        /* Tells whether the previous grid is changed. */
+        bool isTheGridChanged;
 };
 
 #endif

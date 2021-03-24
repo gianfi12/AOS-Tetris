@@ -44,6 +44,9 @@ class Tetromino {
 
         /* Returns a tuple with the row and column of such a Tetromino on the grid. */
         tuple<int,int> getPosition() { return {row,col}; };
+
+        /* Returns true if the Tetromino has been added to the grid. */
+        bool isCompleted(){ return hasCompleted; };
     protected:
         /* This is the shape of the tetromino. */
         bool shape[SHAPE_SIZE][SHAPE_SIZE];
@@ -54,6 +57,8 @@ class Tetromino {
         string color;
         /* This is the game that the tetromino belongs to */
         Game * game;
+        /* Is true if the Tetromino has reached the bottom part. */
+        bool hasCompleted;
 };
 
 #endif

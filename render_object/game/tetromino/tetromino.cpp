@@ -19,7 +19,7 @@ tuple<int,int> getVectorFromDirection(Direction direction){
 }
 
 
-Tetromino::Tetromino(int row, int col, string color, Game * game):row(row),col(col),color(color),game(game){
+Tetromino::Tetromino(int row, int col, string color, Game * game):row(row),col(col),color(color),game(game),hasCompleted(false){
 
 };
 
@@ -97,10 +97,13 @@ bool Tetromino::updatePosition(Direction direction){
                 if(direction == South) {
 
                     // If the direction is South, it means that I have to save the tetromino in the grid.
+                    game->m_grid.lock();
+                    hasCompleted = true;
                     for(int h = 0; h < SHAPE_SIZE; h++)
                         for(int k = 0; k <SHAPE_SIZE; k++)
                             if(shape[h][k])
-                                game->addCellToGrid(h, k, color);
+                                game->addCellToGrid(row+h,col+k, color);
+                    game->m_grid.unlock();
                     return true;
                 }
                 

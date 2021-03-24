@@ -82,7 +82,8 @@ void Terminal::drawOnScreen(DrawObject drawObject, int writingRow, int writingCo
             positionCursorForStartDrawing(writingRow,writingCol);
         }
     }
-    fflush(stdout);                                                                         
+    fflush(stdout); 
+    positionCursorForStartDrawing(0,0);                             
 }          
 
 void Terminal::resetScreen(){
@@ -110,15 +111,16 @@ void Terminal::drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, i
                     found = false;
             }
             if(found){
-                colIndex++;
                 positionCursorForStartDrawing(writingRow,writingCol+colIndex);
                 printf("%s",substringToCheck.c_str());
+                colIndex++;
             }
         }else{
             colIndex++;
         }
     }
     fflush(stdout);   
+    positionCursorForStartDrawing(0,0);
 }
 
 void Terminal::draw2DGridOfColorOnScreen(string * grid, int totalRow, int totalCol, int startingRow, int startingCol, string printingChar){
@@ -135,4 +137,35 @@ void Terminal::draw2DGridOfColorOnScreen(string * grid, int totalRow, int totalC
             }
         }
     fflush(stdout);
+    positionCursorForStartDrawing(0,0);
+}
+
+void Terminal::revertDrawObject(DrawObject drawObject, int writingRow, int writingCol, string substringToCheck){
+    printf("\x1b[0m");
+    positionCursorForStartDrawing(writingRow,writingCol);
+
+    string drawString = drawObject.getObjectString();
+    int startSub = 0; 
+    int colIndex = 0;
+    for(int i = 0; i<drawString.size();i++){
+        if(drawString[i]=='\n'){
+            writingRow++;
+            colIndex=0;
+        }else if(drawString[i]!=' '){
+            bool found = true;
+            for(int j=0; j<substringToCheck.size() && found; j++){
+                if(drawString[i+j]!=substringToCheck[j])
+                    found = false;
+            }
+            if(found){
+                positionCursorForStartDrawing(writingRow,writingCol+colIndex);
+                printf("%s"," ");
+                colIndex++;
+            }
+        }else{
+            colIndex++;
+        }
+    }
+    fflush(stdout);  
+    positionCursorForStartDrawing(0,0);
 }

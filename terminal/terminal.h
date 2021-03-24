@@ -38,6 +38,9 @@ class Terminal{
         void drawOnScreenMovingCursor(DrawObject drawObject, int writingRow, int writingCol, string substringToCheck);
         /* Draw the given 2D grid of colors on screen. */
         void draw2DGridOfColorOnScreen(string * grid, int totalRow, int totalCol, int startingRow, int startingCol, string printingChar);
+        /* Invert the effects on the screen of drawOnScreenMovingCursor by printing the same char but black.
+        NOTE: use the BLOCK char if you want to remove all the content in the cell. */
+        void revertDrawObject(DrawObject drawObject, int writingRow, int writingCol, string substringToCheck);
     private:
         /* Set the terminal mode used to display character to the end user */
         void setTerminalMode();

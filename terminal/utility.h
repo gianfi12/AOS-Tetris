@@ -39,6 +39,8 @@ extern atomic<bool> isDone;
 #define MAG "\e[0;35m"
 #define CYN "\e[0;36m" 
 #define WHT "\e[0;37m"
+#define RSTCLR "\e[0;0m"
+
 
 //Regular bold text
 #define BBLK "\e[1;30m"
