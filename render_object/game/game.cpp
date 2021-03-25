@@ -51,9 +51,7 @@ bool Game::updateState(char c){
 
 
 Tetromino * getRandomTetromino(Game* game){
-    srand(time(NULL));
     int random_tetromino = rand() % 7;
-    srand(time(NULL));
     int random_color = rand() % 6;
     string color;
 

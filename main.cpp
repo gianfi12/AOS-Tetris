@@ -32,7 +32,7 @@ int main()
     RenderObject * actualRenderObject = new Menu(&inputManager, &terminal);
     while (!isDone)
     {
-        // terminal.resetScreen();
+
         //TODO check the condition if a signal handler can be used.
         RenderObject * returnedRenderObject = actualRenderObject->drawFrame();
         if(returnedRenderObject!=NULL){
