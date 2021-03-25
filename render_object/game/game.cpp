@@ -3,6 +3,7 @@
 #include <stdlib.h> 
 #include <time.h>
 #include <sstream>
+#include <random>
 #include "game.h"
 
 #include "render_object/game/tetromino/tetrominos/tetromino_i.h"
@@ -20,11 +21,11 @@ using namespace miosix;
 bool Game::updateState(char c){
     switch (c)
     {
-    case (int)ROTATE_LEFT:
+    case (int)ROTATE_RIGHT:
         activeTetromino->rotateClockwise();
         this->drawFrame();
         break;
-    case (int)ROTATE_RIGHT:
+    case (int)ROTATE_LEFT:
         activeTetromino->rotateAntiClockwise();
         this->drawFrame();
         break;
@@ -50,54 +51,54 @@ bool Game::updateState(char c){
 
 
 Tetromino * getRandomTetromino(Game* game){
-        srand (time(NULL));
-        int random = rand() % 6;
-        srand(time(NULL));
-        int random_color = rand() % 6;
-        string color;
+    srand(time(NULL));
+    int random_tetromino = rand() % 7;
+    srand(time(NULL));
+    int random_color = rand() % 6;
+    string color;
 
-        switch (random_color)
-        {
-        case 0:
-            color = RED;
-            break;
-        case 1:
-            color = GRN;
-            break;
-        case 2:
-            color = YEL;
-            break;
-        case 3:
-            color = BLU;
-            break;
-        case 4:
-            color = MAG;
-            break;
-        case 5:
-        default:
-            color = CYN;
-            break;
-        }
-
-        switch (random)
-        {
-        case 0:
-            return new Tetromino_i(0,COL_TETRIS/2,color,game);
-        case 1:
-            return new Tetromino_j(0,COL_TETRIS/2,color,game);
-        case 2:
-            return new Tetromino_l(0,COL_TETRIS/2,color,game);
-        case 3:
-            return new Tetromino_o(0,COL_TETRIS/2,color,game);
-        case 4:
-            return new Tetromino_s(0,COL_TETRIS/2,color,game);
-        case 5:
-            return new Tetromino_t(0,COL_TETRIS/2,color,game);
-        case 6:
-        default:
-            return new Tetromino_z(0,COL_TETRIS/2,color,game);
-        }
+    switch (random_color)
+    {
+    case 0:
+        color = RED;
+        break;
+    case 1:
+        color = GRN;
+        break;
+    case 2:
+        color = YEL;
+        break;
+    case 3:
+        color = BLU;
+        break;
+    case 4:
+        color = MAG;
+        break;
+    case 5:
+    default:
+        color = CYN;
+        break;
     }
+
+    switch (random_tetromino)
+    {
+    case 0:
+        return new Tetromino_i(0,COL_TETRIS/2,color,game);
+    case 1:
+        return new Tetromino_j(0,COL_TETRIS/2,color,game);
+    case 2:
+        return new Tetromino_l(0,COL_TETRIS/2,color,game);
+    case 3:
+        return new Tetromino_o(0,COL_TETRIS/2,color,game);
+    case 4:
+        return new Tetromino_s(0,COL_TETRIS/2,color,game);
+    case 5:
+        return new Tetromino_t(0,COL_TETRIS/2,color,game);
+    case 6:
+    default:
+        return new Tetromino_z(0,COL_TETRIS/2,color,game);
+    }
+}
 
 void updateTetrominos(void * argv){
     Game * game = (Game*)argv;
@@ -153,7 +154,6 @@ int Game::updateScoreAndGrid() {
     int streak, temp;     // This is how many row at one time the player canceled.
     bool allRow=false;    // This controls that every cell of the row is filled.
     int flagRows[SHAPE_SIZE] = {-1, -1, -1, -1};    // This flags the rows of the streak.
-    bool found;
     streak = 0;
 
     if(actualDrawnedTetromino!=NULL){
