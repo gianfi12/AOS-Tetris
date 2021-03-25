@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdlib.h> 
 #include <time.h>
+#include <sstream>
 #include "game.h"
 
 #include "render_object/game/tetromino/tetrominos/tetromino_i.h"
@@ -130,6 +131,7 @@ Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputM
     nextTetromino = NULL;
     actualDrawnedTetromino = NULL;
     activeTetromino = NULL;
+    score = 0;
     for(int i=0 ; i<GRID_ROW ; i++)
         for(int j=0 ; j<GRID_COL ; j++)
             if(j==0 || i==GRID_ROW-1 || j==GRID_COL-1)
@@ -149,7 +151,7 @@ bool Game::is_legal(int row, int col) {
 int Game::updateScoreAndGrid() {
 
     int streak, temp;     // This is how many row at one time the player canceled.
-    bool allRow;    // This controls that every cell of the row is filled.
+    bool allRow=false;    // This controls that every cell of the row is filled.
     int flagRows[SHAPE_SIZE] = {-1, -1, -1, -1};    // This flags the rows of the streak.
     bool found;
     streak = 0;
@@ -160,11 +162,11 @@ int Game::updateScoreAndGrid() {
     }
 
     // This part computes how many rows the player filled, and flags the startingRow.
-    for(int i = 0, temp = 0; i < SHAPE_SIZE && (i + temp) < ROW_TETRIS; i++){
-        temp = get<0>(activeTetromino->getPosition());      // In this way I get the row of the tetromino.
-
-        for(int j = 0, allRow = true; j < COL_TETRIS && allRow; j++) {
-            if(grid[i + temp][j] != WHT || grid[i + temp][j] != RED || grid[i + temp][j] != CYN || grid[i + temp][j] != GRN || grid[i + temp][j] != BLU || grid[i + temp][j] != MAG || grid[i + temp][j] != YEL)
+    temp = get<0>(activeTetromino->getPosition());      // In this way I get the row of the tetromino.
+    for(int i = 0; i < SHAPE_SIZE && (i + temp) < GRID_ROW-1; i++){
+        allRow = true;
+        for(int j = 0; j < GRID_COL && allRow; j++) {
+            if(grid[i + temp][j] == BLK)
                 allRow = false;
         }
         if(allRow){
@@ -174,28 +176,18 @@ int Game::updateScoreAndGrid() {
     }
 
     // This part recomputes the grid.
-    for(int i = 0; i < SHAPE_SIZE; i++)
+    for(int i = 0; i <SHAPE_SIZE; i++)
         if(flagRows[i] !=-1){
-            temp = flagRows[i];
-            found = true;
-            // Now I have to get the first non-filled row.
-            do {
-                temp--;
-                // Search again in the flagRows array to check that that row isn't also filled.
-                for(int k = 0, found = false; k < SHAPE_SIZE && !found; k++){
-                    if(flagRows[k] == temp)
-                        found = true;
+            bool allBlack = false;
+            int r = flagRows[i];
+            for(;r>0 && !allBlack;r--){
+                allBlack=true;
+                for(int c=1;c<COL_TETRIS-1;c++){
+                    if(grid[r-1][c]!=BLK)
+                        allBlack = false;
+                    grid[r][c] = grid[r-1][c];
                 }
-                if(!found) {        // This means that this candidate row is adequate for the substitution.
-                    m_grid.lock();
-                    for(int j = 0; j < COL_TETRIS; j++) {
-                        grid[flagRows[i]][j] = grid[i + temp][j];
-                        grid[i + temp][j] = BLK;
-                    }
-                    isTheGridChanged = true;
-                    m_grid.unlock();
-                }
-            } while(found && temp>=0);
+            }
         }
 
     switch (streak)
@@ -230,18 +222,21 @@ Game::~Game(){
 
 DrawObject Game::scoreDrawObject() {
     string scoreString = "SCORE:\n";
-    scoreString += to_string(score);
+    ostringstream ss;
+    ss<<score;
+    scoreString += ss.str();
+    scoreString+="\n";
     return DrawObject(scoreString, WHT);
 }
 
                                                                                 
 RenderObject * Game::drawFrame() {   
     Lock<Mutex> lock(m);  
-    //TODO decide which elements to be selected for printing from the objects file.    
-    // terminal->drawOnScreen("", 0, 0);
     m_grid.lock();
     if(isTheGridChanged){ //comment this if you want to reset the screen at each frame
         terminal->resetScreen();
+        terminal->drawOnScreen(nextTetromino->toDrawObject(),0,2);
+        terminal->drawOnScreen(scoreDrawObject(),0,COL_TETRIS/2);
         terminal->draw2DGridOfColorOnScreen(*grid,GRID_ROW,GRID_COL,GRID_OFFSET,0,BLOCK);
         isTheGridChanged = false;
     }
@@ -250,11 +245,9 @@ RenderObject * Game::drawFrame() {
         terminal->revertDrawObject(*actualDrawnedTetromino, prevRow + GRID_OFFSET, prevCol,BLOCK);
         delete actualDrawnedTetromino;
     }
-    //TODO draw the tetromino and the grid altogether.
     m_activeTetromino.lock();
     int rowT, colT;
     tie(rowT,colT) = activeTetromino->getPosition();
-    // terminal->drawOnScreen(activeTetromino->toDrawObject(), rowT + GRID_OFFSET, colT);
     DrawObject temp = activeTetromino->toDrawObject();
     actualDrawnedTetromino = new DrawObject(temp.getObjectString(),temp.getObjectColor());
     prevCol = colT;
@@ -263,7 +256,6 @@ RenderObject * Game::drawFrame() {
     m_activeTetromino.unlock();
 
 
-    //TODO print a bar to indicate the end of the grid
     //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
     return NULL; 
 }                                                                               
