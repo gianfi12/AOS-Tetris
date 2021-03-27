@@ -28,7 +28,8 @@ Menu::~Menu(){
                                                                                 
 RenderObject * Menu::drawFrame() {    
     if(!switchToNextRenderObject){
-        terminal->drawOnScreen(objectMap.at("title"), 0, 0);
+        terminal->resetScreen();
+        terminal->drawOnScreen(objectMap.at("title"), (COL_TETRIS-49)/2, 0);
         terminal->drawOnScreen(objectMap.at("playGame"), 20, 12);
         terminal->drawOnScreen(objectMap.at("exitGame"), 21, 14);
     }else{
@@ -49,7 +50,7 @@ void Menu::menu_draw_objects() {
     string titleConverted;
     for(int i=0;i<title.size();i++){
         if(title[i]=='#'){
-            titleConverted = titleConverted.append(BLOCK); 
+            titleConverted = titleConverted.append(BLOCK_MENU); 
         }else{
             string s(1,title[i]);
             titleConverted = titleConverted.append(s); 

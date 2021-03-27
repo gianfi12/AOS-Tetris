@@ -1,23 +1,21 @@
-#ifndef MENU_H
-#define MENU_H
+#ifndef GAMEOVER_H
+#define GAMEOVER_H
 #include <string>
 #include <map>
 
 #include "render_object/render_object.h"
-#include "render_object/game/game.h"
-#include "miosix.h"
-#include "render_object/draw_object/draw_object.h"
+#include "render_object/menu/menu.h"
 
 using namespace std;
 
-/* This represents the Menu renderer, that based on the its internal state and the read
-characters will print differently on the terminal.*/
-class Menu: public RenderObject{
+
+/* This class represents the render object that is responsible for drawing frame during the game. */
+class Gameover: public RenderObject{
     public:
-        /* Constructs an instance of this Menu. */
-        Menu(InputManager *,Terminal *);
-        /* Destroy an instace of the menu. */
-        ~Menu();
+        /* Constructs an instance of this Game. The integer is the score done by the user */
+        Gameover(InputManager *,Terminal *,int);
+        /* Destroy an instace of the Game. */
+        ~Gameover();
         /* Draw the actual frame based on the actual state, bu using the primitive
         provided by Terminal. If the returned RenderObject is != null than we the actual one has finished its work
         and the returned one has to draw the next frame. */
@@ -25,10 +23,12 @@ class Menu: public RenderObject{
         /* Update the state of the Menu based on the last read char. */
         bool updateState(char c);
     private:
+        /* Is the score done by the user. */
+        int score;
         /* Is the map that associated an id to the draw object. */
         map<string,DrawObject> objectMap;
         /* This method creates a draw_object that describes the menu screen */
-        void menu_draw_objects();
+        void gameover_draw_objects();
         /* It is true when the object has to finish its drawing work and pass the drawing to the next
         render object. */
         bool switchToNextRenderObject;

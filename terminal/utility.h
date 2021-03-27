@@ -28,7 +28,7 @@ extern atomic<bool> isDone;
 #define ENTER 13
 
 /* Terminal settings defintion */
-#define COL_TETRIS 25
+#define COL_TETRIS 65
 #define ROW_TETRIS 45
 
 #define BLK "\e[0;30m"
@@ -107,9 +107,11 @@ extern atomic<bool> isDone;
 
 
 //Character
-//#define BLOCK "\u2588"
+#define BLOCK_MENU "\u2588"
 #define BLOCK "\u2598"
 
 #define GRID_OFFSET 5
+#define SPAWN_OFFSET 4
+
 
 #endif 

@@ -44,8 +44,11 @@ bool Game::updateState(char c){
     default:
         break;
     }
+    if (this->isGameFinished)
+    {
+        return false;
+    }
     
-    //TODO update the state based on the received char c
     return true;
 }
 
@@ -81,20 +84,20 @@ Tetromino * getRandomTetromino(Game* game){
     switch (random_tetromino)
     {
     case 0:
-        return new Tetromino_i(0,COL_TETRIS/2,color,game);
+        return new Tetromino_i(0,GRID_COL/2,color,game);
     case 1:
-        return new Tetromino_j(0,COL_TETRIS/2,color,game);
+        return new Tetromino_j(0,GRID_COL/2,color,game);
     case 2:
-        return new Tetromino_l(0,COL_TETRIS/2,color,game);
+        return new Tetromino_l(0,GRID_COL/2,color,game);
     case 3:
-        return new Tetromino_o(0,COL_TETRIS/2,color,game);
+        return new Tetromino_o(0,GRID_COL/2,color,game);
     case 4:
-        return new Tetromino_s(0,COL_TETRIS/2,color,game);
+        return new Tetromino_s(0,GRID_COL/2,color,game);
     case 5:
-        return new Tetromino_t(0,COL_TETRIS/2,color,game);
+        return new Tetromino_t(0,GRID_COL/2,color,game);
     case 6:
     default:
-        return new Tetromino_z(0,COL_TETRIS/2,color,game);
+        return new Tetromino_z(0,GRID_COL/2,color,game);
     }
 }
 
@@ -116,6 +119,7 @@ void updateTetrominos(void * argv){
         }
         if(game->activeTetromino->updatePosition(South)){ // If true, the tetromino has reached its final position.
             game->score += game->updateScoreAndGrid();
+            game->checkGameFinished();
             delete game->activeTetromino;
             game->activeTetromino = game->nextTetromino;
             game->nextTetromino = getRandomTetromino(game);
@@ -126,15 +130,20 @@ void updateTetrominos(void * argv){
     }
 }
 
-Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),timeSlidingDown(1000),isTheGridChanged(true){
+Game::Game(InputManager * inputManager,Terminal * terminal): RenderObject(inputManager,terminal),timeSlidingDown(1000),isTheGridChanged(true),isGameFinished(false){
     nextTetromino = NULL;
     actualDrawnedTetromino = NULL;
     activeTetromino = NULL;
+    gameover = NULL;
     score = 0;
     for(int i=0 ; i<GRID_ROW ; i++)
         for(int j=0 ; j<GRID_COL ; j++)
-            if(j==0 || i==GRID_ROW-1 || j==GRID_COL-1)
-                grid[i][j] = WHT;
+            if(j==0 || i==GRID_ROW-1 || j==GRID_COL-1){
+                if(i>=SPAWN_OFFSET)                 
+                    grid[i][j] = WHT;
+                else
+                    grid[i][j] = BLK;
+            }
             else
                 grid[i][j] = BLK;
     t = Thread::create(updateTetrominos,2048,1,(void*)this,Thread::JOINABLE);
@@ -180,7 +189,7 @@ int Game::updateScoreAndGrid() {
             int r = flagRows[i];
             for(;r>0 && !allBlack;r--){
                 allBlack=true;
-                for(int c=1;c<COL_TETRIS-1;c++){
+                for(int c=1;c<GRID_COL-1;c++){
                     if(grid[r-1][c]!=BLK)
                         allBlack = false;
                     grid[r][c] = grid[r-1][c];
@@ -233,9 +242,9 @@ RenderObject * Game::drawFrame() {
     m_grid.lock();
     if(isTheGridChanged){ //comment this if you want to reset the screen at each frame
         terminal->resetScreen();
-        terminal->drawOnScreen(nextTetromino->toDrawObject(),0,2);
-        terminal->drawOnScreen(scoreDrawObject(),0,COL_TETRIS/2);
-        terminal->draw2DGridOfColorOnScreen(*grid,GRID_ROW,GRID_COL,GRID_OFFSET,0,BLOCK);
+        terminal->drawOnScreen(nextTetromino->toDrawObject(),0,(COL_TETRIS-GRID_COL)/2+2);
+        terminal->drawOnScreen(scoreDrawObject(),0,(COL_TETRIS)/2);
+        terminal->draw2DGridOfColorOnScreen(*grid,GRID_ROW,GRID_COL,GRID_OFFSET,(COL_TETRIS - GRID_COL)/2,BLOCK);
         isTheGridChanged = false;
     }
     m_grid.unlock();
@@ -248,13 +257,24 @@ RenderObject * Game::drawFrame() {
     tie(rowT,colT) = activeTetromino->getPosition();
     DrawObject temp = activeTetromino->toDrawObject();
     actualDrawnedTetromino = new DrawObject(temp.getObjectString(),temp.getObjectColor());
-    prevCol = colT;
+    prevCol = colT+(COL_TETRIS - GRID_COL)/2;
     prevRow = rowT;
-    terminal->drawOnScreenMovingCursor(temp, rowT + GRID_OFFSET, colT,BLOCK);
+    terminal->drawOnScreenMovingCursor(temp, rowT + GRID_OFFSET,(COL_TETRIS - GRID_COL)/2+ colT,BLOCK);
     m_activeTetromino.unlock();
 
-
-    //TODO return the new Render Object if a new one is needed, for example when passing from the menu to the game.
+    if(isGameFinished){
+        m_gameover.lock();
+        if(gameover==NULL)
+            gameover = new Gameover(inputManager,terminal,score);
+        m_gameover.unlock();
+        return gameover;
+    }
     return NULL; 
 }                                                                               
-             
+
+bool Game::checkGameFinished(){
+    for(int j=1;j<GRID_COL-1;j++)
+        if(grid[SPAWN_OFFSET-1][j]!=BLK)
+            isGameFinished =true;
+    return isGameFinished;
+}

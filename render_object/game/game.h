@@ -1,14 +1,17 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define GRID_ROW (ROW_TETRIS-GRID_OFFSET)
-#define GRID_COL COL_TETRIS
+// #define GRID_ROW (ROW_TETRIS-GRID_OFFSET)
+#define GRID_ROW 20
+#define GRID_COL 25
 
 #include "render_object/render_object.h"
+#include "render_object/gameover/gameover.h"
 
 using namespace std;
 
 class Tetromino;
+class Gameover;
 
 /* This class represents the render object that is responsible for drawing frame during the game. */
 class Game: public RenderObject{
@@ -48,6 +51,8 @@ class Game: public RenderObject{
         DrawObject * actualDrawnedTetromino;
         /* Save also the row and the col where you have drawned the previous tetromino. */
         int prevCol, prevRow;
+        /* Returns true if the game is finished */
+        bool checkGameFinished();
     private:
         /* Is the file that contains a representation of the object to be printed on screen
         used by this class. */
@@ -64,6 +69,11 @@ class Game: public RenderObject{
         DrawObject scoreDrawObject();
         /* Tells whether the previous grid is changed. */
         bool isTheGridChanged;
+
+        /* Is the reference to the next gameover screen */
+        Gameover * gameover;
+        /* Mutex used to access the gameover saved instance */
+        Mutex m_gameover;
 };
 
 #endif
