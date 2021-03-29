@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{todonotes}
+\usetikzlibrary{arrows, arrows.meta}
+\usepackage{float}
+\usepackage[]{algorithm2e}
+\usepackage{pgfplots}
+
+% Use standard A4 paper and standard margins for A4.
+\usepackage[a4paper, margin=2.54cm]{geometry}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+       \vspace*{4cm}
+
+       \textbf{\LARGE Tetris Project for AOS}
+
+       \vspace{1.5cm}
+        Design Document for the Tetris project for the course "Advanced Operating System".
+            
+       \vfill
+
+       \textbf{Authors:}\\
+       Accordi Gianmarco\\
+       Chierici Franco
+
+       \vspace{0.8cm}
+     
+       \includegraphics[width=0.4\textwidth]{img/Logo_Politecnico_Milano.png}
+            
+       Dipartimento di Elettronica, Informazione e Bioingegneria\\
+       Politecnico di Milano\\
+       Italy\\
+       29/03/2021
+            
+   \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+The scope of this document is to explain the design choice we have have made during the development of our project: a version of Tetris working from a terminal console, that is executed on an external microcontroller integrated circuit. 
+It will also contains all the reference to better understand the structure of the code.
+
+\section{Interfaces}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{img/InterafcesDiagram.pdf}
+    \caption{Interfaces Diagram of the project.}
+    \label{fig:gather}
+\end{figure}
+
+\section{Main Loop}
+\begin{algorithm}[H]
+    \For{processorID in processorIDs} {\
+        Synchronized with MPI\_Barrier(MPI\_COMM\_WORLD)\;
+        \eIf{myID==processorID}{
+            Allocate enough buffer in order to receive from each processor information about the amount of data it will send\;      
+        }
+        {
+            Prepare the information about the amount of data to be sent\;
+        }
+        Perform an MPI\_Gather\;       
+        \eIf{myID==processorID}{
+            Allocate enough buffer, based on the information received in the previous gather, in order to receive from each processor the data it will send\;    
+        }
+        {
+            Prepare the data to be sent\;
+        }
+        Perform an MPI\_Gatherv\;
+    }
+    \caption{Communication paradigm.}
+\end{algorithm}
+
+\section{Usage and Setup}
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
