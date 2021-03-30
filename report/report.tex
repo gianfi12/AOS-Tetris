@@ -3,6 +3,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{todonotes}
+\usepackage{hyperref}
 \usetikzlibrary{arrows, arrows.meta}
 \usepackage{float}
 \usepackage[]{algorithm2e}
@@ -47,7 +48,7 @@
 The scope of this document is to explain the design choice we have have made during the development of our project: a version of Tetris working from a terminal console, that is executed on an external microcontroller integrated circuit. 
 It will also contains all the reference to better understand the structure of the code.
 
-\section{Interfaces}
+\section{Design and Interfaces}
 
 \begin{figure}[H]
     \centering
@@ -56,9 +57,21 @@ It will also contains all the reference to better understand the structure of th
     \label{fig:gather}
 \end{figure}
 
-\section{Main Loop}
+\section{Target Platform}
+
+\section{Implementation}
+This part of the document better highlight what hwo we have proceed in the implementation of our project from a more technical perspective.
+
+\subsection{Packages}
+Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
+
+\subsection{Terminal Rendering}
+
+
+\subsection{Main Loop}
 \begin{algorithm}[H]
-    \For{processorID in processorIDs} {\
+    Setup of the InputManager and the Terminal\;
+    \While{!isDone} {\
         Synchronized with MPI\_Barrier(MPI\_COMM\_WORLD)\;
         \eIf{myID==processorID}{
             Allocate enough buffer in order to receive from each processor information about the amount of data it will send\;      
@@ -75,8 +88,13 @@ It will also contains all the reference to better understand the structure of th
         }
         Perform an MPI\_Gatherv\;
     }
-    \caption{Communication paradigm.}
+    \caption{Main loop executed inside the main.cpp.}
 \end{algorithm}
+
+\subsection{Development Note}
+In order to proceed with the development of our project, we have locally cloned the github repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}.
+After removing the \emph{.git} folder, we have also cloned into the same folder our repository\footnote{https://github.com/gianfi12/AOS-Tetris}.
+In order to keep our code more parametric as possible we have defined an header file at \path{terminal/utility.h} that acts as a configuration file 
 
 \section{Usage and Setup}
 

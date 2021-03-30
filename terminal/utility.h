@@ -17,6 +17,7 @@ extern atomic<bool> isDone;
 #define A 97
 #define S 115
 
+/* Modify here to change the mapped key */
 #define ROTATE_LEFT A
 #define ROTATE_RIGHT S
 #define MOVE_LEFT ARROW_LEFT
@@ -27,7 +28,7 @@ extern atomic<bool> isDone;
 #define CTRLC 3
 #define ENTER 13
 
-/* Terminal settings defintion */
+/* Terminal settings defintion, modify here to change the resolution */
 #define COL_TETRIS 65
 #define ROW_TETRIS 45
 
