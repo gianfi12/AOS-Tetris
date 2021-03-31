@@ -58,9 +58,58 @@ It will also contains all the reference to better understand the structure of th
     \caption{Interfaces Diagram of the project.}
     \label{fig:interface}
 \end{figure}
+The previous diagram \ref{fig:interface} shows the high level structure of project. From it you can see that there are two relevant classes: the \textit{Terminal} and the \textit{InputManager}.
+They are two implementation dependent classes that has been introduced in order to decouple the main project logics from the actual platform used.
+The \textbf{Terminal} is used to query the terminal used in order to get the available space on the terminal screen, sets the terminal mode, and to print object on it, as further detailed inside \ref{terminal-rendering}.
+When needed the following functions are exposed by the Terminal:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
-    void setTerminalMode();
+    /* When needed use this method to update the value of col and row */
+    int refreshColAndRow();
+    /* Set the position of the cursor to the left higher corner of the drawing area, relative
+    to the given row and col. */
+    void positionCursorForStartDrawing(int posRow, int posCol);
+    /* Draw a portion of the screen based on DrawObject
+    starting from the position on screen (writingRow, writingCol). */
+    void drawOnScreen(DrawObject drawObject, int writingRow, int writingCol);
 \end{minted}
+The Terminal is instantiate in the entry point of the project that is obviously located at \path{main.cpp}, along with the declaration of the InputManager, than their reference is carried along and passed in the constructor of each
+elements that are interested.
+The \textbf{InputManager} instead manages the interactions with the user, it collects the characters received from the user in a queue, that is later on read by interested elements (like a \textit{RenderObject}).
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    /* Returns an instance of the last char received from the user.
+    NOTE: it is a blocking call. */
+    char getLastChar();
+    /* Returns an instance of the last char received for the terminal.
+    NOTE: it is a blocking call. */
+    char getLastCharForTerminal();
+\end{minted}
+It keeps track of two different queue: one that can be accessed by each element, and the second one only by the terminal. Since we are using ASCII Escape Sequence, we will query the terminal and receive response on the STDIN, so when doing this operation we suspend the adding into the queue of the next char on the STDIN,
+and instead we put these chars on the queue for the Terminal, in this way we avoid that the two different streams of chars are mixed altogether.
+One of the other Main interfaces is the \textbf{RenderObject}. There will be only one RenderObject at a time, and will be managed by the main code.
+As detailed in the \ref{main-loop} each frame we draw is done by calling on the active RenderObject the method:
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    /* Render method of the screen through the Terminal. */
+    virtual RenderObject * drawFrame();
+\end{minted}
+Which draw at each frame what has to be displayed on the screen by the Terminal, that sometimes requires the whole content of the screen to be cleared (call \textit{resetScreen()} on Terminal), or only a portion of it (by using \textit{revertDrawObject()} to undone a previous print, this is done in order to optimize).
+The various RenderObject are: \textit{Game}, \textit{Menu}, and \textit{Gameover}.
+They all contains the logic used to implement the game.
+The other abstraction we have used is to defined the \textbf{DrawObject}, that is an object composed by the following fields:
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    /* Is the string associate to this DrawObject */
+    string object_string;
+    /* Is the color associate to this DrawObject */
+    string color;
+\end{minted}
+Tha are used by the Terminal when a call to print a DrawObject is done.
+The last level of abstraction is represented by the \textbf{Tetromino}, that provides an high level interface, that is extended for each other Tetrominoes. In this way each new Tetrominoes needed requires only to provide a valid constructor that draw the shape of the Tetromino as it was draw on a Grid.
+In fact also the state of the Game inside the \textbf{Game} class is saved inside a grid, that when needed is translated inside a DrawObject and sent to the Terminal to be printed.
+The definition of the Tetromino class then includes also:
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    /* Returns a string that should be printed on screen. */
+    DrawObject toDrawObject();
+\end{minted}
+that is used in order to get the DrawObject starting from the Tetromino that should be sent to the Terminal to be printed.
 
 \subsection{Sequence Diagram}
 \begin{figure}[H]
@@ -69,6 +118,7 @@ It will also contains all the reference to better understand the structure of th
     \caption{Sequence Diagram of the project.}
     \label{fig:sequence}
 \end{figure}
+Talk about isDone
 
 \section{Target Platform}
 
@@ -83,6 +133,7 @@ Our project has been developed by using C++\cite{slidec++}, in order to be compl
 
 
 \subsection{Main Loop}
+\label{main-loop}
 \begin{algorithm}[H]
     Setup of the InputManager and the Terminal\;
     \While{!isDone} {\
