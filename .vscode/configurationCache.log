@@ -1,1 +1,0 @@
-{"buildTargets":["basic.o","input.o","ligand.o","logp.o","main.o","misc.o","molecule.o","parameter.o","population.o","protein.o","score.o","utilities.o","xscore"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}

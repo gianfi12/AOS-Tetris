@@ -21,9 +21,9 @@ class Terminal{
     public:
         /* Construct and build the terminal management */
         Terminal(InputManager *);
-        /* At each frame update this method to change the value of col and row */
+        /* When needed use this method to update the value of col and row */
         int refreshColAndRow();
-        /* Set the terminal screen sizes */
+        /* Get the terminal number of rows and cols */
         void getPos(int *row, int *col);
         /* Set the position of the cursor to the left higher corner of the drawing area, relative
         to the given row and col. */

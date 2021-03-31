@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage[]{algorithm2e}
 \usepackage{pgfplots}
+\usepackage{minted}
 
 % Use standard A4 paper and standard margins for A4.
 \usepackage[a4paper, margin=2.54cm]{geometry}
@@ -55,10 +56,19 @@ It will also contains all the reference to better understand the structure of th
     \centering
     \includegraphics[width=\linewidth]{img/InterafcesDiagram.pdf}
     \caption{Interfaces Diagram of the project.}
-    \label{fig:gather}
+    \label{fig:interface}
 \end{figure}
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    void setTerminalMode();
+\end{minted}
 
 \subsection{Sequence Diagram}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{img/SequenceDiagram.pdf}
+    \caption{Sequence Diagram of the project.}
+    \label{fig:sequence}
+\end{figure}
 
 \section{Target Platform}
 
@@ -69,6 +79,7 @@ This part of the document better highlight what hwo we have proceed in the imple
 Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
 
 \subsection{Terminal Rendering}
+\label{terminal-rendering}
 
 
 \subsection{Main Loop}
