@@ -118,15 +118,38 @@ that is used in order to get the DrawObject starting from the Tetromino that sho
     \caption{Sequence Diagram of the project.}
     \label{fig:sequence}
 \end{figure}
-Talk about isDone
+The above figure better detailed how the components interact among them, and also the interaction with the user.
+First of all since we will have different threads that has to coordinate among them, we have defined a global variable inside \path{terminal/utility.h}:
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    extern atomic<bool> isDone;
+\end{minted}
+In this way when some threads decide to terminate the computation, when for example the user press the quit key, everyone is shutdown correctly, and also the access to the variable is made sequential thanks to the usage of the atomic type.
+As said we have adopted a multi-threaded architecture:
+\begin{itemize}
+    \item the \textbf{InputManager} class has a thread that reads the chars on the stdin and it puts them in the correct queue;
+    \item the \textbf{RenderObject} instead has a thread that is used in order to read the chars inside the interested queue from the InputManager, and then it class the \textit{updateState()} method to update the state of the object based on the received char, and it is modeled like a finite state machine;
+    \item \textbf{Game} has a thread that has to make update the state of the Tetrominoes used in the game, for example by making a Tetromino sliding down as long as time passes.
+\end{itemize}
+The figure also highlight three of the main interactions that happens between these components.
+For example the first loop is the one of the thread on the InputManager that reads the char from the STDIN;
+The second loop is series of invocation that starting from the \label{main-loop}, makes the call to draw the frame based on the actual active RenderObject, that will draw the DrawObject associated to the actual state thanks to the Terminal.
+At the end the active RenderObject will returns a next RenderObject different from NULL, if the we have to change the scene, for example when from the Menu the use starts a Game.
+The third loop is instead the interaction between the InputManager and the other components interested in getting the last chars from the queues. Because we have defined two queues, one for the chars that are of interest to the RenderObjects and one for the Terminal.
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    const unsigned int defaultSerialSpeed=115200;
+\end{minted}
+by changing the value of the Baud Rate from 19200 to 115200, this makes the drawing of a scene much faster, since the characters between the board and the PC for example are interchanged more faster.
 
 \section{Target Platform}
+Since we have used as target the miosix-kernel, the supported boards are the supported by the kernel itself. We have done most of our work on the STM32 Nucleo-64\footnote{https://www.st.com/en/evaluation-tools/nucleo-l476rg.html}.
 
 \section{Implementation}
 This part of the document better highlight what hwo we have proceed in the implementation of our project from a more technical perspective.
+To make the refresh procedure works an acceptable velocity we have modified the file under \path{miosix-kernel/miosix/config/arch/cortexM4_stm32l4/stm32l476rg_nucleo/board_settings.h}, and set the 
 
 \subsection{Packages}
 Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
+Speak also about screen.
 
 \subsection{Terminal Rendering}
 \label{terminal-rendering}
@@ -137,24 +160,16 @@ Our project has been developed by using C++\cite{slidec++}, in order to be compl
 \begin{algorithm}[H]
     Setup of the InputManager and the Terminal\;
     \While{!isDone} {\
-        Synchronized with MPI\_Barrier(MPI\_COMM\_WORLD)\;
-        \eIf{myID==processorID}{
-            Allocate enough buffer in order to receive from each processor information about the amount of data it will send\;      
+        Call drawFrame() on the actualRenderObject\;
+        \eIf{the returnedRenderObject!=NULL}{
+            update actualRenderObject with the returnedRenderObject\;      
         }
-        {
-            Prepare the information about the amount of data to be sent\;
-        }
-        Perform an MPI\_Gather\;       
-        \eIf{myID==processorID}{
-            Allocate enough buffer, based on the information received in the previous gather, in order to receive from each processor the data it will send\;    
-        }
-        {
-            Prepare the data to be sent\;
-        }
-        Perform an MPI\_Gatherv\;
+        Sleep for 500 milliseconds\;
     }
     \caption{Main loop executed inside the main.cpp.}
 \end{algorithm}
+This is the loop executed in the main, that draws a frame every 500ms, thanks to the last sleep.
+It maintains update the actualRenderObject based on the value returned by the RenderObject upon updating the scene.
 
 \subsection{Development Note}
 In order to proceed with the development of our project, we have locally cloned the github repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}.
