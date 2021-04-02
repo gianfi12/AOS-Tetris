@@ -149,7 +149,7 @@ To make the refresh procedure works an acceptable velocity we have modified the 
 
 \subsection{Packages}
 Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
-We choosed C++ over C because we found very useful the object-oriented paradigm.
+We choosed C++ over C because we found very useful the object-oriented paradigm. \todo[]{Facciamo confronto tra bare mental e miosix?}
 
 \subsubsection{Miosix}
 This OS kernel allowed us to abstract from bare-metal programming and made management of multithreading simple.
@@ -180,6 +180,36 @@ In order to get the terminal size and reset the screen, we used the ansii escape
 \end{algorithm}
 This is the loop executed in the main, that draws a frame every 500ms, thanks to the last sleep.
 It maintains update the actualRenderObject based on the value returned by the RenderObject upon updating the scene.
+After rendering the scene in the last frame, the main awaits for 500 milliseconds, and then it stops its computation if someone has update the value of isDone to true, if for example the user has pressed the quit key.
+Another important part is how the user inputs is managed inside the InputManager:
+\begin{algorithm}[H]
+    \While{!isDone} {\
+        get last char\;
+        manage the incoming char\;
+    }
+    \caption{Loop executed by the thread associated to the InputManager.}
+\end{algorithm}
+The second part is of particular interested, in fact based on the state of the variable
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    atomic<bool> awaitSequenceForTerminal;
+\end{minted}
+If it is true, means that the Terminal has recently queried the terminal with the ANSII Escape Sequence, and it is sill in waiting for all the requested chars to be printed on the STDIN, taken by the InputManager and then stored inside 
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    queue<char> lastCharsForTerminal;
+\end{minted}
+All other chars instead finish inside
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+    queue<char> lastChars;
+\end{minted}
+The last important piece of computation of interested is the work done by the thread associated with each RenderObject:
+\begin{algorithm}[H]
+    \While{isDone AND continueRead)} {\
+        get last char from the input manager queue of chars\;
+        update the RenderObject state based on the char read from the queue\;
+    }
+    \caption{Loop executed by the thread associated to the RenderObject.}
+\end{algorithm}
+The update state part is used to separate the part of state update and the one of rendering, in this way we update the state only based on the user input, instead when a frame is rendered the state is not changed, and the output will reflects the previous updates.
 
 \subsection{Development Note}
 In order to proceed with the development of our project, we have locally cloned the github repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}.
@@ -189,6 +219,7 @@ In order to keep our code more parametric as possible we have defined an header 
 \section{Target Platform}
 Our board is the \emph{NUCLEO-L476RG}, it has a mini-USB controller, 1 LED, 1 user and 1 reset push-buttons, 76 pins.
 It is provided with 1 Mbyte of flash memory, 128 Kbytes of SRAM, and a 80 MHz Arm Cortex-M4 core.
+
 \section{Setup and Usage}
 First, it is necessary to clone the repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}, remove the relative\emph{.git} folder.\newline
 Then, clone into the same folder our repository\footnote{https://github.com/gianfi12/AOS-Tetris}.\newline
@@ -196,20 +227,19 @@ To configure the miosix kernel, follow the Getting Started section in the Miosix
 and the In-circuit debugger section\footnote{https://miosix.org/wiki/index.php?title=Quick\_start\#In-circuit\_debugger}.\newline
 
 After that, plug in the board, in our case the STM32 Nucleo-64, open the terminal in the miosix-kernel directory and run the command
-\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{bash}
     openocd -f stm32l4nucleo.cfg
-\end{bash}
+\end{minted}
 In order to open the communication between the board and the computer.\newline
 Now, open a new terminal and run
-\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{bash}
     screen /dev/ttyACM0 115200
-\end{bash}
-This is where the board will write on screen. Note that if the size of this terminal is less than 65 \times 45, the program will print an error and close itself.
+\end{minted}
+This is where the board will write on screen. Note that if the size of this terminal is less than (65,45), the program will print an error and close itself.
 Then, in a new tab of the terminal, again in the directory miosix-kernel, run the command
-\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{bash}
     arm-miosix-eabi-gdb main.elf
-    c
-\end{bash}
+\end{minted}
 So that the program runs with gdb.
 
 Now it is time to play Tetris! Press enter to start the game and q to exit. Use the arrows to move left, right or down the Tetromino. Press A to rotate the Tetromino counterclockwise, S to move it clockwise.
