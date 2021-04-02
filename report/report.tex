@@ -149,11 +149,21 @@ To make the refresh procedure works an acceptable velocity we have modified the 
 
 \subsection{Packages}
 Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
-Speak also about screen.
+We choosed C++ over C because we found very useful the object-oriented paradigm.
+
+\subsubsection{Miosix}
+This OS kernel allowed us to abstract from bare-metal programming and made management of multithreading simple.
+\subsubsection{GDB}
+The debugger helped us to find bugs and load the program into the board. Also, with the file \emph{.gdbinit} we pre-loaded some base instructions.
+\subsubsection{Screen}
+Screen is a terminal multiplexer, that allows the board to use a remote terminal session, in this case Ubuntu's terminal.
 
 \subsection{Terminal Rendering}
 \label{terminal-rendering}
-
+To render the frames, the first thing we did was to change the terminal mode. Usually it is set in canonical mode, where the program receives the input only when he presses enter.
+To achieve a "raw mode", thanks to the library termios, we turned on the local flag ICANON, that sets the terminal to canonical mode, and the ECHO flag.
+The ECHO flag tells the terminal to print every key that the user is writing, and by default is on, because normally a user wants to see what is typing.
+In order to get the terminal size and reset the screen, we used the ansii escape sequence. TODO
 
 \subsection{Main Loop}
 \label{main-loop}
@@ -174,10 +184,37 @@ It maintains update the actualRenderObject based on the value returned by the Re
 \subsection{Development Note}
 In order to proceed with the development of our project, we have locally cloned the github repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}.
 After removing the \emph{.git} folder, we have also cloned into the same folder our repository\footnote{https://github.com/gianfi12/AOS-Tetris}.
-In order to keep our code more parametric as possible we have defined an header file at \path{terminal/utility.h} that acts as a configuration file 
+In order to keep our code more parametric as possible we have defined an header file at \path{terminal/utility.h} that acts as a configuration file
 
-\section{Usage and Setup}
+\section{Target Platform}
+Our board is the \emph{NUCLEO-L476RG}, it has a mini-USB controller, 1 LED, 1 user and 1 reset push-buttons, 76 pins.
+It is provided with 1 Mbyte of flash memory, 128 Kbytes of SRAM, and a 80 MHz Arm Cortex-M4 core.
+\section{Setup and Usage}
+First, it is necessary to clone the repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}, remove the relative\emph{.git} folder.\newline
+Then, clone into the same folder our repository\footnote{https://github.com/gianfi12/AOS-Tetris}.\newline
+To configure the miosix kernel, follow the Getting Started section in the Miosix Wiki page\footnote{https://miosix.org/wiki/index.php?title=Quick\_start\#Getting\_started} 
+and the In-circuit debugger section\footnote{https://miosix.org/wiki/index.php?title=Quick\_start\#In-circuit\_debugger}.\newline
 
+After that, plug in the board, in our case the STM32 Nucleo-64, open the terminal in the miosix-kernel directory and run the command
+\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+    openocd -f stm32l4nucleo.cfg
+\end{bash}
+In order to open the communication between the board and the computer.\newline
+Now, open a new terminal and run
+\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+    screen /dev/ttyACM0 115200
+\end{bash}
+This is where the board will write on screen. Note that if the size of this terminal is less than 65 \times 45, the program will print an error and close itself.
+Then, in a new tab of the terminal, again in the directory miosix-kernel, run the command
+\begin{minted}[linenos, bgcolor=black, escapeinside=!!]{bash}
+    arm-miosix-eabi-gdb main.elf
+    c
+\end{bash}
+So that the program runs with gdb.
+
+Now it is time to play Tetris! Press enter to start the game and q to exit. Use the arrows to move left, right or down the Tetromino. Press A to rotate the Tetromino counterclockwise, S to move it clockwise.
+When you fill an entire row, it will be canceled and your score will be updated.\newline
+If you manage to fill 4 rows, congratulations, you just made Tetris!
 
 \bibliographystyle{plain}
 \bibliography{references}

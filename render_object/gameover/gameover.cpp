@@ -70,7 +70,7 @@ void Gameover::gameover_draw_objects() {
     DrawObject obj = DrawObject(titleConverted, GRN);
     objectMap.insert( {"title",obj} );
 
-    string scoreWriting = "You have reached a SCORE of:";
+    string scoreWriting = "You have reached a SCORE of: ";
     ostringstream ss;
     ss<<score;
     scoreWriting += ss.str();
