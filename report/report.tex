@@ -8,7 +8,7 @@
 \usepackage{float}
 \usepackage[]{algorithm2e}
 \usepackage{pgfplots}
-\usepackage[cache=false,outputdir=.texpadtmp]{minted}
+\usepackage{minted}
 
 % Use standard A4 paper and standard margins for A4.
 \usepackage[a4paper, margin=2.54cm]{geometry}
@@ -46,8 +46,8 @@
 \newpage
 
 \section{Introduction}
-The scope of this document is to explain the design choice we have have made during the development of our project: a version of Tetris working from a terminal console, that is executed on an external microcontroller integrated circuit. 
-It will also contains all the reference to better understand the structure of the code.
+The scope of this document is to explain the design choices we have have made during the development of our project: a version of Tetris working from a terminal console, that is executed on an external microcontroller integrated circuit. 
+It will also contain all the references to better understand the structure of the code.
 
 \section{Design}
 
@@ -58,8 +58,8 @@ It will also contains all the reference to better understand the structure of th
     \caption{Interfaces Diagram of the project.}
     \label{fig:interface}
 \end{figure}
-The previous diagram \ref{fig:interface} shows the high level structure of project. From it you can see that there are two relevant classes: the \textit{Terminal} and the \textit{InputManager}.
-They are two implementation dependent classes that has been introduced in order to decouple the main project logics from the actual platform used.
+The previous diagram \ref{fig:interface} shows the high level structure of the project. From it you can see that there are two relevant classes: the \textit{Terminal} and the \textit{InputManager}.
+They are two implementation dependent classes that have been introduced in order to decouple the main project logics from the actual platform used.
 The \textbf{Terminal} is used to query the terminal used in order to get the available space on the terminal screen, sets the terminal mode, and to print object on it, as further detailed inside \ref{terminal-rendering}.
 When needed the following functions are exposed by the Terminal:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
