@@ -60,7 +60,7 @@ It will also contain all the references to better understand the structure of th
 \end{figure}
 The previous diagram \ref{fig:interface} shows the high level structure of the project. From it you can see that there are two relevant classes: the \textit{Terminal} and the \textit{InputManager}.
 They are two implementation dependent classes that have been introduced in order to decouple the main project logics from the actual platform used.
-The \textbf{Terminal} is used to query the terminal used in order to get the available space on the terminal screen, sets the terminal mode, and to print object on it, as further detailed inside \ref{terminal-rendering}.
+The \textbf{Terminal} class is used to query the terminal to get the available space on the terminal screen, sets the terminal mode, and to print object on it, as further detailed inside \ref{terminal-rendering}.
 When needed the following functions are exposed by the Terminal:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     /* When needed use this method to update the value of col and row */
@@ -72,7 +72,7 @@ When needed the following functions are exposed by the Terminal:
     starting from the position on screen (writingRow, writingCol). */
     void drawOnScreen(DrawObject drawObject, int writingRow, int writingCol);
 \end{minted}
-The Terminal is instantiate in the entry point of the project that is obviously located at \path{main.cpp}, along with the declaration of the InputManager, than their reference is carried along and passed in the constructor of each
+The Terminal is instantiated in the entry point of the project that is obviously located at \path{main.cpp}, along with the declaration of the InputManager, than references top them are carried along and passed in the constructor of each
 elements that are interested.
 The \textbf{InputManager} instead manages the interactions with the user, it collects the characters received from the user in a queue, that is later on read by interested elements (like a \textit{RenderObject}).
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
@@ -83,7 +83,7 @@ The \textbf{InputManager} instead manages the interactions with the user, it col
     NOTE: it is a blocking call. */
     char getLastCharForTerminal();
 \end{minted}
-It keeps track of two different queue: one that can be accessed by each element, and the second one only by the terminal. Since we are using ASCII Escape Sequence, we will query the terminal and receive response on the STDIN, so when doing this operation we suspend the adding into the queue of the next char on the STDIN,
+It keeps track of two different queues: one that can be accessed by each element, and the second one only by the terminal. Since we are using ASCII Escape Sequence, we will query the terminal and receive response on the STDIN, so when doing this operation we suspend the adding into the queue of the next char on the STDIN,
 and instead we put these chars on the queue for the Terminal, in this way we avoid that the two different streams of chars are mixed altogether.
 One of the other Main interfaces is the \textbf{RenderObject}. There will be only one RenderObject at a time, and will be managed by the main code.
 As detailed in the \ref{main-loop} each frame we draw is done by calling on the active RenderObject the method:
@@ -91,20 +91,20 @@ As detailed in the \ref{main-loop} each frame we draw is done by calling on the 
     /* Render method of the screen through the Terminal. */
     virtual RenderObject * drawFrame();
 \end{minted}
-Which draw at each frame what has to be displayed on the screen by the Terminal, that sometimes requires the whole content of the screen to be cleared (call \textit{resetScreen()} on Terminal), or only a portion of it (by using \textit{revertDrawObject()} to undone a previous print, this is done in order to optimize).
+Each draw action will be done by the Terminal, and sometimes this action requires the whole content of the screen to be cleared ( and so a call to \textit{resetScreen()} on Terminal is done), or only a portion of it is cleared (by using \textit{revertDrawObject()} to undone a previous print, this is done in order to reduce the number of transferred characters).
 The various RenderObject are: \textit{Game}, \textit{Menu}, and \textit{Gameover}.
 They all contains the logic used to implement the game.
-The other abstraction we have used is to defined the \textbf{DrawObject}, that is an object composed by the following fields:
+The other abstraction we have used is to define the \textbf{DrawObject}, that is an object composed by the following fields:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     /* Is the string associate to this DrawObject */
     string object_string;
     /* Is the color associate to this DrawObject */
     string color;
 \end{minted}
-Tha are used by the Terminal when a call to print a DrawObject is done.
-The last level of abstraction is represented by the \textbf{Tetromino}, that provides an high level interface, that is extended for each other Tetrominoes. In this way each new Tetrominoes needed requires only to provide a valid constructor that draw the shape of the Tetromino as it was draw on a Grid.
-In fact also the state of the Game inside the \textbf{Game} class is saved inside a grid, that when needed is translated inside a DrawObject and sent to the Terminal to be printed.
-The definition of the Tetromino class then includes also:
+THese fields are used by the Terminal when a call to print a DrawObject is done.
+The last level of abstraction is represented by the \textbf{Tetromino}, that provides an high level interface, that is extended for each other Tetrominoes. In this way each new Tetromino implementation we need, requires only to provide a valid constructor that draws the shape of the Tetromino as it was drawn on a Grid.
+In fact also the state of the Game inside the \textbf{Game} class is saved inside a grid, than when needed is translated into a DrawObject and sent to the Terminal to be printed.
+The definition of the Tetromino class includes also:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     /* Returns a string that should be printed on screen. */
     DrawObject toDrawObject();
@@ -118,52 +118,52 @@ that is used in order to get the DrawObject starting from the Tetromino that sho
     \caption{Sequence Diagram of the project.}
     \label{fig:sequence}
 \end{figure}
-The above figure better detailed how the components interact among them, and also the interaction with the user.
+The above figure better detailed how the components interacts among them, and also the interactions with the user.
 First of all since we will have different threads that has to coordinate among them, we have defined a global variable inside \path{terminal/utility.h}:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     extern atomic<bool> isDone;
 \end{minted}
-In this way when some threads decide to terminate the computation, when for example the user press the quit key, everyone is shutdown correctly, and also the access to the variable is made sequential thanks to the usage of the atomic type.
+That has the scope to signal to the threads when to terminate the computation: for example the user press the quit key, and then every thread is shutdown correctly. Also the access to the variable is made sequential thanks to the usage of the atomic type.
 As said we have adopted a multi-threaded architecture:
 \begin{itemize}
     \item the \textbf{InputManager} class has a thread that reads the chars on the stdin and it puts them in the correct queue;
-    \item the \textbf{RenderObject} instead has a thread that is used in order to read the chars inside the interested queue from the InputManager, and then it class the \textit{updateState()} method to update the state of the object based on the received char, and it is modeled like a finite state machine;
-    \item \textbf{Game} has a thread that has to make update the state of the Tetrominoes used in the game, for example by making a Tetromino sliding down as long as time passes.
+    \item the \textbf{RenderObject} instead has a thread that is used in order to read the chars inside the interested queue from the InputManager, and then it call the \textit{updateState()} method to update the state of the object based on the received char, and it is modeled like a finite state machine;
+    \item \textbf{Game} has a thread that has to update the state of the Tetrominoes used in the game, for example by making a Tetromino sliding down as long as time passes.
 \end{itemize}
 The figure also highlight three of the main interactions that happens between these components.
 For example the first loop is the one of the thread on the InputManager that reads the char from the STDIN;
-The second loop is series of invocation that starting from the \label{main-loop}, makes the call to draw the frame based on the actual active RenderObject, that will draw the DrawObject associated to the actual state thanks to the Terminal.
-At the end the active RenderObject will returns a next RenderObject different from NULL, if the we have to change the scene, for example when from the Menu the use starts a Game.
+The second loop is a series of invocation that starting from the main, it makes the call to draw the frame based on the actual active RenderObject, that will draw the DrawObject associated to the actual state.
+At the end the active RenderObject will returns a next RenderObject different from NULL, if we have to change the scene, for example when from the Menu the use starts a Game.
 The third loop is instead the interaction between the InputManager and the other components interested in getting the last chars from the queues. Because we have defined two queues, one for the chars that are of interest to the RenderObjects and one for the Terminal.
+Another change we have done is to \path{miosix/config/arch/cortexM4_stm32l4/stm32l476rg_nucleo/board_settings.h}:
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     const unsigned int defaultSerialSpeed=115200;
 \end{minted}
-by changing the value of the Baud Rate from 19200 to 115200, this makes the drawing of a scene much faster, since the characters between the board and the PC for example are interchanged more faster.
+by changing the value of the Baud Rate from 19200 to 115200, this makes the drawing of a scene much faster, since the characters exchange between the board and the PC is faster.
 
 \section{Target Platform}
 Since we have used as target the miosix-kernel, the supported boards are the supported by the kernel itself. We have done most of our work on the STM32 Nucleo-64\footnote{https://www.st.com/en/evaluation-tools/nucleo-l476rg.html}.
 
 \section{Implementation}
-This part of the document better highlight what hwo we have proceed in the implementation of our project from a more technical perspective.
-To make the refresh procedure works an acceptable velocity we have modified the file under \path{miosix-kernel/miosix/config/arch/cortexM4_stm32l4/stm32l476rg_nucleo/board_settings.h}, and set the 
+This part of the document better highlight how we have proceed in the implementation of our project starting from the desig, into a more technical perspective.
 
 \subsection{Packages}
 Our project has been developed by using C++\cite{slidec++}, in order to be compliant with the miosix-kernel\cite{miosix}.
-We choosed C++ over C because we found very useful the object-oriented paradigm. \todo[]{Facciamo confronto tra bare mental e miosix?}
+We choose C++ over C because we found very useful the object-oriented paradigm. 
 
 \subsubsection{Miosix}
-This OS kernel allowed us to abstract from bare-metal programming and made management of multithreading simple.
+This OS kernel allowed us to abstract from bare-metal programming and made management of multithreading simple\cite{slidebaremetal}\cite{osprogramming}.
 \subsubsection{GDB}
-The debugger helped us to find bugs and load the program into the board. Also, with the file \emph{.gdbinit} we pre-loaded some base instructions.
+The debugger helped us to find bugs and load the program into the board. Also, with the file \emph{.gdbinit} we've automated the debug process, that consists into connecting to the debug server and the loading of the main.bin to the board for execution..
 \subsubsection{Screen}
-Screen is a terminal multiplexer, that allows the board to use a remote terminal session, in this case Ubuntu's terminal.
-
+Screen is a terminal multiplexer, that allows the board to use a remote terminal session, in this case Ubuntu's terminal, and also allows the user to get a UI for interfacing with the board and play Tetris.
+ 
 \subsection{Terminal Rendering}
 \label{terminal-rendering}
-To render the frames, the first thing we did was to change the terminal mode. Usually it is set in canonical mode, where the program receives the input only when he presses enter.
-To achieve a "raw mode", thanks to the library termios, we turned on the local flag ICANON, that sets the terminal to canonical mode, and the ECHO flag.
+To render the frames, the first thing we did was to change the terminal mode. Usually it is set in canonical mode, where the program receives the input only when the user presses enter.
+To achieve a "raw mode", thanks to the library \textit{Termios}, we turned off the local flag ICANON, that sets the terminal to canonical mode, and the ECHO flag.
 The ECHO flag tells the terminal to print every key that the user is writing, and by default is on, because normally a user wants to see what is typing.
-In order to get the terminal size and reset the screen, we used the ansii escape sequence. TODO
+In order to get the terminal size, to reset the screen, to change the cursor position, to make a colorful UI, we have used the ANSII Escape Sequences\footnote{https://en.wikipedia.org/wiki/ANSI\_escape\_code}. 
 
 \subsection{Main Loop}
 \label{main-loop}
@@ -171,29 +171,27 @@ In order to get the terminal size and reset the screen, we used the ansii escape
     Setup of the InputManager and the Terminal\;
     \While{!isDone} {\
         Call drawFrame() on the actualRenderObject\;
-        \eIf{the returnedRenderObject!=NULL}{
+        \If{the returnedRenderObject!=NULL}{
             update actualRenderObject with the returnedRenderObject\;      
         }
         Sleep for 500 milliseconds\;
     }
-    \caption{Main loop executed inside the main.cpp.}
 \end{algorithm}
 This is the loop executed in the main, that draws a frame every 500ms, thanks to the last sleep.
 It maintains update the actualRenderObject based on the value returned by the RenderObject upon updating the scene.
 After rendering the scene in the last frame, the main awaits for 500 milliseconds, and then it stops its computation if someone has update the value of isDone to true, if for example the user has pressed the quit key.
-Another important part is how the user inputs is managed inside the InputManager:
+Another important part is how the user inputs is managed inside the InputManager:\newline
 \begin{algorithm}[H]
     \While{!isDone} {\
         get last char\;
         manage the incoming char\;
     }
-    \caption{Loop executed by the thread associated to the InputManager.}
 \end{algorithm}
-The second part is of particular interested, in fact based on the state of the variable
-\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
+The second line of the pseudocode of particular interested, in fact based on the state of the variable:
+\begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++} 
     atomic<bool> awaitSequenceForTerminal;
 \end{minted}
-If it is true, means that the Terminal has recently queried the terminal with the ANSII Escape Sequence, and it is sill in waiting for all the requested chars to be printed on the STDIN, taken by the InputManager and then stored inside 
+If it is true, it means that the Terminal class has recently queried the terminal with the ANSII Escape Sequence, and it is sill in waiting for all the requested chars to be printed on the STDIN, taken by the InputManager and then stored inside 
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     queue<char> lastCharsForTerminal;
 \end{minted}
@@ -201,15 +199,14 @@ All other chars instead finish inside
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{c++}
     queue<char> lastChars;
 \end{minted}
-The last important piece of computation of interested is the work done by the thread associated with each RenderObject:
+The last important piece of computation of interested is the work done by the thread associated with each RenderObject:\newline
 \begin{algorithm}[H]
     \While{isDone AND continueRead)} {\
         get last char from the input manager queue of chars\;
         update the RenderObject state based on the char read from the queue\;
     }
-    \caption{Loop executed by the thread associated to the RenderObject.}
 \end{algorithm}
-The update state part is used to separate the part of state update and the one of rendering, in this way we update the state only based on the user input, instead when a frame is rendered the state is not changed, and the output will reflects the previous updates.
+The update state part is used to separate the part of state update and the one of rendering, in this way we update the state only based on the user inputs, while instead when a frame is rendered the state is not changed, and the drawn scene will reflects the previous updates.
 
 \subsection{Development Note}
 In order to proceed with the development of our project, we have locally cloned the github repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}.
@@ -235,12 +232,12 @@ Now, open a new terminal and run
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{bash}
     screen /dev/ttyACM0 115200
 \end{minted}
-This is where the board will write on screen. Note that if the size of this terminal is less than (65,45), the program will print an error and close itself.
+This is where the board will write on screen. Note that if the size of this terminal is less than 65x45, the program will print an error and close itself.
 Then, in a new tab of the terminal, again in the directory miosix-kernel, run the command
 \begin{minted}[linenos, bgcolor=white, escapeinside=!!]{bash}
     arm-miosix-eabi-gdb main.elf
 \end{minted}
-So that the program runs with gdb.
+If you want to debug it with gdb. The if you have defined as present in the folder the .gdbinit file, the process of connecting to the debug server and the load of the program is automated.
 
 Finally it is time to play Tetris! Press enter to start the game and q to exit. Use the arrows to move left, right or down the Tetromino. Press A to rotate the Tetromino counterclockwise, S to move it clockwise.
 When you fill an entire row, it will be canceled and your score will be updated.\newline
