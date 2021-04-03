@@ -8,7 +8,7 @@
 \usepackage{float}
 \usepackage[]{algorithm2e}
 \usepackage{pgfplots}
-\usepackage{minted}
+\usepackage[cache=false,outputdir=.texpadtmp]{minted}
 
 % Use standard A4 paper and standard margins for A4.
 \usepackage[a4paper, margin=2.54cm]{geometry}
@@ -221,7 +221,7 @@ Our board is the \emph{NUCLEO-L476RG}, it has a mini-USB controller, 1 LED, 1 us
 It is provided with 1 Mbyte of flash memory, 128 Kbytes of SRAM, and a 80 MHz Arm Cortex-M4 core.
 
 \section{Setup and Usage}
-First, it is necessary to clone the repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}, remove the relative\emph{.git} folder.\newline
+First, it is necessary to clone the repository of the miosix kernel\footnote{https://github.com/fedetft/miosix-kernel}, and remove the relative\emph{.git} folder.\newline
 Then, clone into the same folder our repository\footnote{https://github.com/gianfi12/AOS-Tetris}.\newline
 To configure the miosix kernel, follow the Getting Started section in the Miosix Wiki page\footnote{https://miosix.org/wiki/index.php?title=Quick\_start\#Getting\_started} 
 and the In-circuit debugger section\footnote{https://miosix.org/wiki/index.php?title=Quick\_start\#In-circuit\_debugger}.\newline
@@ -242,7 +242,7 @@ Then, in a new tab of the terminal, again in the directory miosix-kernel, run th
 \end{minted}
 So that the program runs with gdb.
 
-Now it is time to play Tetris! Press enter to start the game and q to exit. Use the arrows to move left, right or down the Tetromino. Press A to rotate the Tetromino counterclockwise, S to move it clockwise.
+Finally it is time to play Tetris! Press enter to start the game and q to exit. Use the arrows to move left, right or down the Tetromino. Press A to rotate the Tetromino counterclockwise, S to move it clockwise.
 When you fill an entire row, it will be canceled and your score will be updated.\newline
 If you manage to fill 4 rows, congratulations, you just made Tetris!
 
