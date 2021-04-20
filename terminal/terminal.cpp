@@ -17,6 +17,16 @@ void Terminal::setTerminalMode(){
     
     return;
 }
+
+Terminal::~Terminal(){
+    struct termios t;
+    tcgetattr(STDIN_FILENO,&t);
+    t.c_lflag |= (ECHO & ICANON);
+    tcsetattr(0, TCSANOW, &t);
+
+    return;
+}
+
 int Terminal::refreshColAndRow(){
     //NOTE: code provided from https://stackoverflow.com/questions/50884685/how-to-get-cursor-position-in-c-using-ansi-code
     //NOTE: look on wikipedia at https://en.wikipedia.org/wiki/ANSI_escape_code

@@ -21,6 +21,8 @@ class Terminal{
     public:
         /* Construct and build the terminal management */
         Terminal(InputManager *);
+        /* Reset the terminal mode */
+        ~Terminal();
         /* When needed use this method to update the value of col and row */
         int refreshColAndRow();
         /* Get the terminal number of rows and cols */

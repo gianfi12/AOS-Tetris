@@ -25,3 +25,6 @@ then you can exit by pressing Ctrl+A -> k -> y.
 ## Increase baud rate
 Modify in the file miosix-kernel/miosix/config/arch/cortexM4_stm32l4/stm32l476rg_nucleo/board_settings.h as in the following:
 >const unsigned int defaultSerialSpeed=115200;
+
+## Documentation used
+We have used also this [guide](https://en.wikibooks.org/wiki/Serial_Programming/termios) for the serial programming part.
