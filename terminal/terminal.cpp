@@ -21,7 +21,7 @@ void Terminal::setTerminalMode(){
 Terminal::~Terminal(){
     struct termios t;
     tcgetattr(STDIN_FILENO,&t);
-    t.c_lflag |= (ECHO & ICANON);
+    t.c_lflag |= (ECHO | ICANON);
     tcsetattr(0, TCSANOW, &t);
 
     return;
